@@ -1,0 +1,24 @@
+POST http://localhost:3000/clients/register
+Content-Type: application/json
+
+{
+    "category":
+"Padaria",
+"name":
+"Rebeca da silva",
+"cep":
+"54820-500",
+"uf":
+"PE",
+"cidade":
+"Paulista",
+"bairro":
+"pau amarelo",
+"logradouro":
+"Rua. haiti, 413",
+"tpCliente":
+"Prata",
+"cnpj":
+"31.413.076/0001-08"
+}
+
