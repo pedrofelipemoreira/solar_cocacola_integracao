@@ -143,7 +143,7 @@ const Cliente = () => {
                                 <a onClick={() => { console.log("aaa"); abrirModalEdicao(record)}}>Editar {record.cod}</a>
                                 <a onClick={() => {removeClient(record._id, clients); console.log(record._id)}}>Excluir</a>
                             </Space>
-                        ),
+                        ), 
                     }
                 ]}
                 dataSource={clients}
