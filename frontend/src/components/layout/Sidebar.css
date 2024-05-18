@@ -55,14 +55,12 @@ button:hover {
     background-color: red;
   }
 
-  
-.sidebar nav {
-    width: 100%;
-}
+
 
 .sidebar button > span {
     display: inline-flex;
     align-items: center;
+    width: 100vh;
     gap: 12px;
     height: 48px;
     padding: 0 16px 0 12px;
@@ -70,5 +68,15 @@ button:hover {
     line-height: 1;
     font-size: 25px;
     letter-spacing: 1px;
-    width: 100%;
+
 }
+
+.sidebar > nav {
+    flex: 1 1 auto;
+    align-items: start;
+    display: flex;
+    flex-direction: column;
+    width: 100%;   
+}
+
+/* ajustando sidebar responsiva */

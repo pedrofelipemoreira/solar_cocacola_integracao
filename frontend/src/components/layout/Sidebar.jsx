@@ -24,7 +24,7 @@ const Navbar = () => {
           </div>
         </header>
         <Divider style={{ margin: "10px 0", backgroundColor: "#9CA3AF" }} />
-        <nav>
+        <nav className="border">
           <Link to="/">
             <button>
               <span>
@@ -43,21 +43,14 @@ const Navbar = () => {
             </button>
           </Link>
 
+        <Link to="/cliente">
           <button>
             <span>
               <FaPeopleLine/>
                <span>Clientes</span>
             </span>
           </button>
-
-          <Link to="/">
-          <button>
-            <span>
-            <BiBarChartAlt2/>
-               <span>Relatórios</span>
-            </span>
-          </button>
-          </Link>
+        </Link>
 
           <Link to="/produtos">
           <button>
@@ -70,7 +63,7 @@ const Navbar = () => {
 
           <Divider style={{ margin: "10px 0", backgroundColor: "#9CA3AF" }} />
 
-          <Link to="/">
+          <Link to="/addcliente">
           <button>
             <span>
             <IoMdPersonAdd />
