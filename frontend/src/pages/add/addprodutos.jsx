@@ -46,8 +46,8 @@ const AddProdutos = () => {
           <select className="input" name="category" value={produto.category} onChange={handleChange} style={{ cursor: 'pointer' }}>
             <option value="">Produto</option> 
             <option value="suco">Suco</option> 
-            <option value="refri">Refrigerante</option>    
-            <option value="ener">Energetico</option>  
+            <option value="Refrigerante">Refrigerante</option>    
+            <option value="Energetico">Energetico</option>  
             </select>
             </div>
         <div className='smash'>Descrição*<input className="desc" type="text" placeholder=" Descreva o nome do seu produto" name="descricao" onChange={handleChange} /></div>

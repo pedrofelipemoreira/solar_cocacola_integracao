@@ -2,11 +2,6 @@ div{
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.main-content {
-    margin: 40px 40px 40px 250px;
-    background-color: #fff;
-}
-
 .new-product {
     display: flex;
     flex-direction: column;

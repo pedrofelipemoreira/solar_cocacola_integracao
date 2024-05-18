@@ -10,7 +10,9 @@ const ClientController = {
     create: async (req, res) => {
         try {
 
-            const {category, name, cep, uf, cidade, bairro, logradouro, tpCliente, cnpj} = req.body
+            const { category, name, cep, uf, cidade, bairro, logradouro, tpCliente, cnpj} = req.body
+
+
 
             if(!category){
                 res.status(422).json({message: 'A Categoria é obrigatória'});

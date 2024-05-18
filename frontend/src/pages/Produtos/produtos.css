@@ -5,6 +5,9 @@ div{
 .main-content {
     margin: 40px 40px 40px 250px;
     background-color: #fff;
+    border: #000000;
+    border: 1px solid #9CA3AF;
+    border-radius: 10px;
 }
 
 .new-product {
