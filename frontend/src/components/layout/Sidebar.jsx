@@ -52,7 +52,7 @@ const Navbar = () => {
           </button>
         </Link>
 
-          <Link to="/produtos">
+          <Link to="/promocoes">
           <button>
             <span>
             <BiDollar/>
