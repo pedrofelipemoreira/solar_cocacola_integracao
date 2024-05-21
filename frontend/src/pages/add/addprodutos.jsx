@@ -64,15 +64,6 @@ const AddProdutos = () => {
             <option value="SP">SP</option>
           </select>
         </div>
-        <div className='smash'>
-          Tipo Cliente*
-          <select className="input" name="tpCliente" value={produto.tipoCliente} onChange={handleChange} style={{ cursor: 'pointer' }}>
-            <option value="">Selecione...</option>
-            <option value="bronze">Bronze</option>
-            <option value="prata">Prata</option>
-            <option value="ouro">Ouro</option>
-          </select>
-        </div>
         <div className='smash'>Valor*<input className="descr" type="number" placeholder=" R$1500,00..." name="valor" value={produto.valor} onChange={handleChange} /></div>
       </form>
       <button className="bt" type="button" onClick={handleSubmit}>ADICIONAR PRODUTO</button>

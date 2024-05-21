@@ -68,17 +68,6 @@ const Produtos = () => {
 
         },
         {
-            title: 'Tipo de Cliente',
-            dataIndex: 'tpCliente',
-            key: 'tipoCliente',
-            filters: [
-                { text: 'Bronze', value: 'Bronze' },
-                { text: 'Prata', value: 'Prata' },
-                { text: 'Ouro', value: 'Ouro' },
-            ],
-            onFilter: (value, record) => record.tipoCliente.indexOf(value) === 0,
-        },
-        {
             title: 'Valor',
             dataIndex: 'valor',
             key: 'valor',

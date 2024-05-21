@@ -23,10 +23,6 @@ const produtoSchema = new Schema({
             type: String,
             required: true
         },
-        tpCliente: {
-            type: String,
-            required: true
-        },
         valor: {
             type: Number,
             required: true
