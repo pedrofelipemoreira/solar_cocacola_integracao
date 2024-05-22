@@ -60,25 +60,21 @@ const Produtos = () => {
             title: 'Data',
             dataIndex: 'updatedAt',
             key: 'data',
-            filters: []
         },
         {
             title: 'Categoria',
             dataIndex: 'category',
             key: 'categoria',
-            filters: []
         },
         {
             title: 'Descrição',
             dataIndex: 'descricao',
             key: 'descricao',
-            filters: []
         },
         {
             title: 'ML',
             dataIndex: 'ml',
             key: 'ml',
-            filters: []
         },
         {
             title: 'Região',
@@ -97,7 +93,6 @@ const Produtos = () => {
             title: 'Valor',
             dataIndex: 'valor',
             key: 'valor',
-            filters: [],
             render: (_, record) => (
                 <Space size='middle'>
                     <p>R$ {record.valor}</p>

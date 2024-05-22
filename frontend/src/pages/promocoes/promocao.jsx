@@ -16,62 +16,7 @@ const Promocao = () => {
 
     const [produtos, setProdutos] = useState([]);
 
-    let columns = [
-        {
-            title: 'Código',
-            dataIndex: 'cod',
-            key: 'cod',
-            filters: []
-        },
-        {
-            title: 'Data',
-            dataIndex: 'updatedAt',
-            key: 'data',
-            filters: []
-        },
-        {
-            title: 'Categoria',
-            dataIndex: 'category',
-            key: 'categoria',
-            filters: []
-        },
-        {
-            title: 'Descrição',
-            dataIndex: 'descricao',
-            key: 'descricao',
-            filters: []
-        },
-        {
-            title: 'ML',
-            dataIndex: 'ml',
-            key: 'ml',
-            filters: []
-        },
-        {
-            title: 'Região',
-            dataIndex: 'regiao',
-            key: 'regiao',
-            filters: [
-                { text: 'PE', value: 'PE' },
-                { text: 'BA', value: 'BA' },
-                { text: 'RJ', value: 'RJ' },
-                { text: 'SP', value: 'SP' },
-            ],
-            onFilter: (value, record) => record.regiao.indexOf(value) === 0,
-
-        },
-        {
-            title: 'Valor',
-            dataIndex: 'valor',
-            key: 'valor',
-            filters: [],
-            render: (_, record) => (
-                <Space size='middle'>
-                    <p>R$ {record.valor.toFixed(2)}</p>
-                </Space>
-            )
-        },
-    ];
+    let columns = [];
 
     if(promocao.tpCliente === "bronze"){
         columns = [
@@ -79,31 +24,58 @@ const Promocao = () => {
                 title: 'Código',
                 dataIndex: 'cod',
                 key: 'cod',
-                filters: []
+                filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+                    <div style={{ padding: 8 }}>
+                        <Input
+                            placeholder="Pesquisar Código"
+                            value={selectedKeys[0]}
+                            onChange={e => {
+                                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                                confirm({ closeDropdown: false });
+                            }}
+                            style={{ marginBottom: 8, display: 'block' }}
+                        />
+                        <Button
+                            onClick={() => confirm()}
+                            size="small"
+                            style={{ width: 90, marginRight: 8 }}
+                        >
+                            Pesquisar
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                clearFilters();
+                                setSelectedKeys([]);
+                                confirm({ closeDropdown: true });
+                            }}
+                            size="small"
+                            style={{ width: 90 }}
+                        >
+                            Limpar
+                        </Button>
+                    </div>
+                ),
+                onFilter: (value, record) => record.cod.toString().toLowerCase().includes(value.toLowerCase())
             },
             {
                 title: 'Data',
                 dataIndex: 'updatedAt',
                 key: 'data',
-                filters: []
             },
             {
                 title: 'Categoria',
                 dataIndex: 'category',
                 key: 'categoria',
-                filters: []
             },
             {
                 title: 'Descrição',
                 dataIndex: 'descricao',
                 key: 'descricao',
-                filters: []
             },
             {
                 title: 'ML',
                 dataIndex: 'ml',
                 key: 'ml',
-                filters: []
             },
             {
                 title: 'Região',
@@ -119,10 +91,19 @@ const Promocao = () => {
     
             },
             {
-                title: 'Valor',
+                title: 'Valor Original ',
                 dataIndex: 'valor',
                 key: 'valor',
-                filters: [],
+                render: (_, record) => (
+                    <Space size='middle'>
+                        <p>R$ {record.valor}</p>
+                    </Space>
+                )
+            },
+            {
+                title: 'Valor Promocional',
+                dataIndex: 'valor',
+                key: 'valor',
                 render: (_, record) => (
                     <Space size='middle'>
                         
@@ -130,6 +111,16 @@ const Promocao = () => {
                     </Space>
                 )
             },
+            {
+                title: 'Ações',
+                key: 'action',
+                render: (_, record) => (
+                    <Space size="middle">
+                        <a >Editar {record.cod}</a>
+                        <a >Excluir</a>
+                    </Space>
+                ),
+            }
         ];
     }
 
@@ -140,31 +131,58 @@ const Promocao = () => {
                 title: 'Código',
                 dataIndex: 'cod',
                 key: 'cod',
-                filters: []
+                filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+                    <div style={{ padding: 8 }}>
+                        <Input
+                            placeholder="Pesquisar Código"
+                            value={selectedKeys[0]}
+                            onChange={e => {
+                                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                                confirm({ closeDropdown: false });
+                            }}
+                            style={{ marginBottom: 8, display: 'block' }}
+                        />
+                        <Button
+                            onClick={() => confirm()}
+                            size="small"
+                            style={{ width: 90, marginRight: 8 }}
+                        >
+                            Pesquisar
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                clearFilters();
+                                setSelectedKeys([]);
+                                confirm({ closeDropdown: true });
+                            }}
+                            size="small"
+                            style={{ width: 90 }}
+                        >
+                            Limpar
+                        </Button>
+                    </div>
+                ),
+                onFilter: (value, record) => record.cod.toString().toLowerCase().includes(value.toLowerCase())
             },
             {
                 title: 'Data',
                 dataIndex: 'updatedAt',
                 key: 'data',
-                filters: []
             },
             {
                 title: 'Categoria',
                 dataIndex: 'category',
                 key: 'categoria',
-                filters: []
             },
             {
                 title: 'Descrição',
                 dataIndex: 'descricao',
                 key: 'descricao',
-                filters: []
             },
             {
                 title: 'ML',
                 dataIndex: 'ml',
                 key: 'ml',
-                filters: []
             },
             {
                 title: 'Região',
@@ -180,10 +198,19 @@ const Promocao = () => {
     
             },
             {
-                title: 'Valor',
+                title: 'Valor Original ',
                 dataIndex: 'valor',
                 key: 'valor',
-                filters: [],
+                render: (_, record) => (
+                    <Space size='middle'>
+                        <p>R$ {record.valor}</p>
+                    </Space>
+                )
+            },
+            {
+                title: 'Valor Promocional',
+                dataIndex: 'valor',
+                key: 'valor',
                 render: (_, record) => (
                     <Space size='middle'>
                         <p>R$ {(valor = record.valor * (1- (10 /100))).toFixed(2)}</p>
@@ -202,31 +229,58 @@ const Promocao = () => {
                 title: 'Código',
                 dataIndex: 'cod',
                 key: 'cod',
-                filters: []
+                filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+                    <div style={{ padding: 8 }}>
+                        <Input
+                            placeholder="Pesquisar Código"
+                            value={selectedKeys[0]}
+                            onChange={e => {
+                                setSelectedKeys(e.target.value ? [e.target.value] : []);
+                                confirm({ closeDropdown: false });
+                            }}
+                            style={{ marginBottom: 8, display: 'block' }}
+                        />
+                        <Button
+                            onClick={() => confirm()}
+                            size="small"
+                            style={{ width: 90, marginRight: 8 }}
+                        >
+                            Pesquisar
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                clearFilters();
+                                setSelectedKeys([]);
+                                confirm({ closeDropdown: true });
+                            }}
+                            size="small"
+                            style={{ width: 90 }}
+                        >
+                            Limpar
+                        </Button>
+                    </div>
+                ),
+                onFilter: (value, record) => record.cod.toString().toLowerCase().includes(value.toLowerCase())
             },
             {
                 title: 'Data',
                 dataIndex: 'updatedAt',
                 key: 'data',
-                filters: []
             },
             {
                 title: 'Categoria',
                 dataIndex: 'category',
                 key: 'categoria',
-                filters: []
             },
             {
                 title: 'Descrição',
                 dataIndex: 'descricao',
                 key: 'descricao',
-                filters: []
             },
             {
                 title: 'ML',
                 dataIndex: 'ml',
                 key: 'ml',
-                filters: []
             },
             {
                 title: 'Região',
@@ -242,10 +296,19 @@ const Promocao = () => {
     
             },
             {
-                title: 'Valor',
+                title: 'Valor Original ',
                 dataIndex: 'valor',
                 key: 'valor',
-                filters: [],
+                render: (_, record) => (
+                    <Space size='middle'>
+                        <p>R$ {record.valor}</p>
+                    </Space>
+                )
+            },
+            {
+                title: 'Valor Promocional',
+                dataIndex: 'valor',
+                key: 'valor',
                 render: (_, record) => (
                     <Space size='middle'>
                         <p>R$ {(valor = record.valor * (1- (15 /100))).toFixed(2)}</p>
@@ -287,6 +350,8 @@ const Promocao = () => {
 
             {promocao.tpCliente === "bronze" && (
                 <div className="main-content-promocao">
+                    
+                    <a href="/addProdutos"><button className="btn" type="button">+ ADD PROMOÇÃO</button></a>
                   
                     <Table
                         columns={[
@@ -313,6 +378,7 @@ const Promocao = () => {
 
             {promocao.tpCliente === "prata" && (
                 <div className="main-content-promocao">
+                    <a href="/addProdutos"><button className="btn" type="button">+ ADD PROMOÇÃO</button></a>
                   
                 <Table
                     columns={[
@@ -339,6 +405,7 @@ const Promocao = () => {
 
             {promocao.tpCliente === "ouro" && (
                 <div className="main-content-promocao">
+                    <a href="/addProdutos"><button className="btn" type="button">+ ADD PROMOÇÃO</button></a>
                   
                 <Table
                     columns={[

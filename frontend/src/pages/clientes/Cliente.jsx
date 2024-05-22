@@ -22,25 +22,21 @@ const Cliente = () => {
             title: 'Data',
             dataIndex: 'updatedAt',
             key: 'date',
-            filters: []
         },
         {
             title: 'Categoria',
             dataIndex: 'category',
             key: 'category',
-            filters: []
         },
         {
             title: 'Nome',
             dataIndex: 'name',
             key: 'nome',
-            filters: []
         },
         {
             title: 'CEP',
             dataIndex: 'cep',
             key: 'cep',
-            filters: []
         },
         {
             title: 'UF',
@@ -58,19 +54,16 @@ const Cliente = () => {
             title: 'Cidade',
             dataIndex: 'cidade',
             key: 'cidade',
-            filters: []
         },
         {
             title: 'Bairro',
             dataIndex: 'bairro',
             key: 'bairro',
-            filters: []
         },
         {
             title: 'Logradouro',
             dataIndex: 'logradouro',
             key: 'logradouro',
-            filters: []
         },
         {
             title: 'Tipo de Cliente',
