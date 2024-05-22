@@ -102,7 +102,7 @@ const Produtos = () => {
                 <Space size='middle'>
                     <p>R$ {record.valor}</p>
                 </Space>
-            )
+            ) 
         },
     ];
 
