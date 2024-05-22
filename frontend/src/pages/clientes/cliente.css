@@ -1,0 +1,30 @@
+div{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.new-product {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border: red;
+    background-color: #fff;
+    color: black;
+}
+.new {
+    margin: 20px;
+}
+
+.new:hover{
+    background-color: red;
+}
+
+.btn {
+    padding: 10px;
+    margin: 20px;
+    cursor: pointer;
+    background-color: #fff;
+    border-radius: 20px;
+}
+
+
