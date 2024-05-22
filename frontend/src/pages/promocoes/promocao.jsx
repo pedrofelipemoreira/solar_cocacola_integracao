@@ -12,6 +12,8 @@ const Promocao = () => {
     const [filtroRegiao, setFiltroRegiao] = useState(null);
     const [filtroTipoCliente, setFiltroTipoCliente] = useState(null);
 
+    var valor = 0;
+
     const [produtos, setProdutos] = useState([]);
 
     let columns = [
@@ -65,7 +67,7 @@ const Promocao = () => {
             filters: [],
             render: (_, record) => (
                 <Space size='middle'>
-                    <p>R$ {record.valor}</p>
+                    <p>R$ {record.valor.toFixed(2)}</p>
                 </Space>
             )
         },
@@ -123,7 +125,8 @@ const Promocao = () => {
                 filters: [],
                 render: (_, record) => (
                     <Space size='middle'>
-                        <p>R$ {record.valor * (1- (5 /100)) }</p>
+                        
+                        <p>R$ {(valor = record.valor * (1- (5 /100))).toFixed(2)}</p>
                     </Space>
                 )
             },
@@ -183,7 +186,7 @@ const Promocao = () => {
                 filters: [],
                 render: (_, record) => (
                     <Space size='middle'>
-                        <p>R$ {record.valor * (1- (10 /100)) }</p>
+                        <p>R$ {(valor = record.valor * (1- (10 /100))).toFixed(2)}</p>
                     </Space>
                 )
             },
@@ -245,7 +248,7 @@ const Promocao = () => {
                 filters: [],
                 render: (_, record) => (
                     <Space size='middle'>
-                        <p>R$ {record.valor * (1- (15 /100)) }</p>
+                        <p>R$ {(valor = record.valor * (1- (15 /100))).toFixed(2)}</p>
                     </Space>
                 )
             },
@@ -272,6 +275,9 @@ const Promocao = () => {
     return (
         
         <div className='bodyPromocao'>
+
+            <h1>Selecione o nivel do cliente para ver suas promoções</h1>
+
             <select className="input" onChange={handleChange} name="tpCliente" style={{ cursor: 'pointer' }}>
                 <option value="">Selecione...</option>
                 <option value="bronze">Bronze</option>

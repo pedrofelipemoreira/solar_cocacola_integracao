@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../utils/api';
-import { Space, Table, Tag, Button, Select, Modal, Form, Input, Row, Col } from 'antd';
+import { Space, Table, Button, Select, Modal, Form, Input, Row, Col } from 'antd';
 import './produtos.css'; // Importe o arquivo de estilo
 import functionsProduto from './functionsProduto.jsx'
-
 import useFlashMessage from '../../hooks/useFlashMessage.jsx';
-
-import { Link } from 'react-router-dom'
 
 const { Option } = Select;
 
@@ -15,20 +12,49 @@ const Produtos = () => {
     const [filtroTipoCliente, setFiltroTipoCliente] = useState(null);
     const [editandoProduto, setEditandoProduto] = useState(null);
     const [modalVisivel, setModalVisivel] = useState(false);
-    const { Option } = Select;
 
-    const {setFlashMessage} = useFlashMessage();
+    const { setFlashMessage } = useFlashMessage();
 
     const [produtos, setProdutos] = useState([]);
     const { removeProduto } = functionsProduto();
-
 
     const columns = [
         {
             title: 'Código',
             dataIndex: 'cod',
             key: 'cod',
-            filters: []
+            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+                <div style={{ padding: 8 }}>
+                    <Input
+                        placeholder="Pesquisar Código"
+                        value={selectedKeys[0]}
+                        onChange={e => {
+                            setSelectedKeys(e.target.value ? [e.target.value] : []);
+                            confirm({ closeDropdown: false });
+                        }}
+                        style={{ marginBottom: 8, display: 'block' }}
+                    />
+                    <Button
+                        onClick={() => confirm()}
+                        size="small"
+                        style={{ width: 90, marginRight: 8 }}
+                    >
+                        Pesquisar
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            clearFilters();
+                            setSelectedKeys([]);
+                            confirm({ closeDropdown: true });
+                        }}
+                        size="small"
+                        style={{ width: 90 }}
+                    >
+                        Limpar
+                    </Button>
+                </div>
+            ),
+            onFilter: (value, record) => record.cod.toString().toLowerCase().includes(value.toLowerCase())
         },
         {
             title: 'Data',
@@ -94,25 +120,23 @@ const Produtos = () => {
         }
     };
 
-    function abrirModalEdicao(produto) {
-
+    const abrirModalEdicao = (produto) => {
         setEditandoProduto(produto);
         setModalVisivel(true);
     };
 
-    function fecharModalEdicao() {
+    const fecharModalEdicao = () => {
         setEditandoProduto(undefined);
         setModalVisivel(false);
-        console.log("Oii")
     };
 
-    const handleSalvarEdicao = async(values) => {
-        let msgText = 'Atualização Realizado com sucesso!';
+    const handleSalvarEdicao = async (values) => {
+        let msgText = 'Atualização Realizada com sucesso!';
         let msgType = 'success';
         try {
             // Envia uma solicitação para atualizar o produto
-            const data = await api.put(`/produtos/edit/${editandoProduto._id}`, values).then((response) =>{
-                return response.data
+            const data = await api.put(`/produtos/edit/${editandoProduto._id}`, values).then((response) => {
+                return response.data;
             });
 
             // Atualiza a lista de produtos
@@ -124,7 +148,7 @@ const Produtos = () => {
             msgText = error.response.data.message;
             msgType = 'error';
         }
-        setFlashMessage(msgText, msgType)
+        setFlashMessage(msgText, msgType);
     };
 
     return (
@@ -138,22 +162,13 @@ const Produtos = () => {
                         key: 'action',
                         render: (_, record) => (
                             <Space size="middle">
-                                <a onClick={() => {
-                                    abrirModalEdicao(record) 
-                                    console.log(record)
-                                }}>Editar </a>
-                                <a onClick={() => {
-                                    removeProduto(record._id, produtos) 
-                                    console.log(record._id)
-                                }}>Excluir</a>
+                                <a onClick={() => abrirModalEdicao(record)}>Editar</a>
+                                <a onClick={() => removeProduto(record._id, produtos)}>Excluir</a>
                             </Space>
-
-
                         ),
                     }
                 ]}
                 dataSource={produtos}
-                // Aplica os filtros de região e tipo de cliente
                 onChange={(pagination, filters) => {
                     if (filters.regiao && filters.regiao.length > 0) {
                         setFiltroRegiao(filters.regiao[0]);
@@ -178,7 +193,7 @@ const Produtos = () => {
                     <Form className='editar' onFinish={handleSalvarEdicao} initialValues={editandoProduto}>
                         <Row gutter={20}> {/* Define o espaçamento entre as colunas */}
                             <Col span={12}> {/* Define que esta coluna ocupará metade do espaço */}
-                                <Form.Item label="Código" name="cod" type="number">
+                                <Form.Item label="Código" name="cod">
                                     <Input />
                                 </Form.Item>
                                 <Form.Item label="Categoria" name="category">
@@ -188,7 +203,6 @@ const Produtos = () => {
                                         <Option value="Energético">Energético</Option>
                                     </Select>
                                 </Form.Item>
-                                {/* Adicione mais itens de formulário conforme necessário */}
                             </Col>
                             <Col span={12}> {/* Define que esta coluna ocupará metade do espaço */}
                                 <Form.Item label="ML" name="ml">
@@ -197,7 +211,6 @@ const Produtos = () => {
                                 <Form.Item label="Valor" name="valor">
                                     <Input />
                                 </Form.Item>
-                                {/* Adicione mais itens de formulário conforme necessário */}
                             </Col>
                         </Row>
                         <Row gutter={16}>
@@ -210,7 +223,6 @@ const Produtos = () => {
                                         <Option value="SP">SP</Option>
                                     </Select>
                                 </Form.Item>
-                                {/* Adicione mais itens de formulário conforme necessário */}
                             </Col>
                             <Col span={12}>
                                 <Form.Item label="Tipo de Cliente" name="tpCliente">
@@ -220,12 +232,11 @@ const Produtos = () => {
                                         <Option value="Ouro">Ouro</Option>
                                     </Select>
                                 </Form.Item>
-                                {/* Adicione mais itens de formulário conforme necessário */}
                             </Col>
                         </Row>
                         <Row>
                             <Col span={24}>
-                                <Form.Item label="Descrição" name="descricao" value={produtos.categoty}>
+                                <Form.Item label="Descrição" name="descricao">
                                     <Input />
                                 </Form.Item>
                             </Col>

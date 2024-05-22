@@ -25,14 +25,6 @@ const Navbar = () => {
         </header>
         <Divider style={{ margin: "10px 0", backgroundColor: "#9CA3AF" }} />
         <nav className="border">
-          <Link to="/">
-            <button>
-              <span>
-                <FaHome />
-                <span>Página inicial</span>
-              </span>
-            </button>
-          </Link>
 
           <Link to="/produtos">
             <button>
