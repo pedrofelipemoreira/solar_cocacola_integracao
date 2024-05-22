@@ -103,7 +103,7 @@ const Produtos = () => {
                     <p>R$ {record.valor}</p>
                 </Space>
             )  
-        },
+        }, 
     ];
 
     useEffect(() => {
