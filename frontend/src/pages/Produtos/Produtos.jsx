@@ -106,7 +106,7 @@ const Produtos = () => {
             render: (_, record) => (
                 <Space size="middle">
                     <Button onClick={() => showModal(record)}>Editar</Button>
-                    <a onClick={() => removeProduto(record._id, produtos)}>Excluir</a>
+                    <Button danger onClick={() => removeProduto(record._id, produtos)}>Excluir</Button>
                 </Space>
             ),
         }

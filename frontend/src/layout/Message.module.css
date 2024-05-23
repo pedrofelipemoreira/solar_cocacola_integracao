@@ -1,20 +1,60 @@
-.message{
-    max-width: 60%;
-    padding: 1em;
-    border: 1px solid #000;
-    margin: 1.2em auto 0;
-    text-align: center;
-    border-radius: 5px;
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
-.success{
-    color: #155724;
-    background-color: #D4EDDA;
-    border-color: #C3E6CD;
+.message {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #333;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    animation: slideIn 0.5s ease-out;
 }
 
-.error{
-    color: #721C24;
-    background-color: #F8D7Da;
-    border-color: #F5C6CB;
+.message.success {
+    border-left: 5px solid #4CAF50;
+}
+
+.message.error {
+    border-left: 5px solid #F44336;
+}
+
+.message-icon {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.message-content {
+    flex-grow: 1;
+}
+
+.message-close {
+    margin-left: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.message-timer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: rgba(255, 255, 255, 0.5);
+    transition: width 5s linear;
 }

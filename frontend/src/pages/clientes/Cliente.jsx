@@ -183,7 +183,7 @@ const Cliente = () => {
                             render: (_, record) => (
                                 <Space size="middle">
                                     <Button onClick={() => showModal(record)}>Editar</Button>
-                                    <a onClick={() => removeClient(record._id, clients)}>Excluir</a>
+                                    <Button danger onClick={() => removeClient(record._id, clients)}>Excluir</Button>
                                 </Space>
                             ),
                         }

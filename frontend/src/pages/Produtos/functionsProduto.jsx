@@ -40,9 +40,7 @@ export default function useProduto(){
 
             const updateProdutos = produtos.filter((produto) => produto._id !== id)
 
-            console.log(updateProdutos)
             setProdutos(updateProdutos)
-            console.log(response.data)
             return response.data
 
 
