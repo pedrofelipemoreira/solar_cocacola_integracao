@@ -10,8 +10,10 @@ const Promocao = () => {
     const [novaPromocao, setNovaPromocao] = useState({});
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [produtoSelecionado, setProdutoSelecionado] = useState(null);
+    const [produtosPromocionais, setprodutosPromocionais] = useState([]); 
 
     const {register} = functionsProduto();
+    const { removeProduto } = functionsProduto();
 
     function handleChangeTipoCliente(e) {
         setPromocao({ ...promocao, [e.target.name]: e.target.value });
@@ -104,7 +106,7 @@ const Promocao = () => {
             )
         },
         {
-            title: 'Valor Promocional',
+            title: 'Valor para seu Nivel',
             dataIndex: 'valor',
             key: 'valorPromocional',
             render: (_, record) => (
@@ -124,6 +126,97 @@ const Promocao = () => {
         }
     ];
 
+    let columns2 = [
+        {
+            title: 'Código',
+            dataIndex: 'cod',
+            key: 'cod',
+            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+                <div style={{ padding: 8 }}>
+                    <Input
+                        placeholder="Pesquisar Código"
+                        value={selectedKeys[0]}
+                        onChange={e => {
+                            setSelectedKeys(e.target.value ? [e.target.value] : []);
+                            confirm({ closeDropdown: false });
+                        }}
+                        style={{ marginBottom: 8, display: 'block' }}
+                    />
+                    <Button
+                        onClick={() => confirm()}
+                        size="small"
+                        style={{ width: 90, marginRight: 8 }}
+                    >
+                        Pesquisar
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            clearFilters();
+                            setSelectedKeys([]);
+                            confirm({ closeDropdown: true });
+                        }}
+                        size="small"
+                        style={{ width: 90 }}
+                    >
+                        Limpar
+                    </Button>
+                </div>
+            ),
+            onFilter: (value, record) => record.cod.toString().toLowerCase().includes(value.toLowerCase())
+        },
+        {
+            title: 'Data',
+            dataIndex: 'updatedAt',
+            key: 'data',
+        },
+        {
+            title: 'Categoria',
+            dataIndex: 'category',
+            key: 'categoria',
+        },
+        {
+            title: 'Descrição',
+            dataIndex: 'descricao',
+            key: 'descricao',
+        },
+        {
+            title: 'ML',
+            dataIndex: 'ml',
+            key: 'ml',
+        },
+        {
+            title: 'Região',
+            dataIndex: 'regiao',
+            key: 'regiao',
+            filters: [
+                { text: 'PE', value: 'PE' },
+                { text: 'BA', value: 'BA' },
+                { text: 'RJ', value: 'RJ' },
+                { text: 'SP', value: 'SP' },
+            ],
+            onFilter: (value, record) => record.regiao.indexOf(value) === 0,
+        },
+        {
+            title: 'Valor Promocional',
+            dataIndex: 'valor',
+            key: 'valorPromocional',
+            render: (_, record) => (
+                <Space size='middle'>
+                    <p>R$ {(record.valor).toFixed(2)}</p>
+                </Space>
+            )
+        },
+        {
+            title: 'Ações',
+            key: 'action',
+            render: (_, record) => (
+                <Space size="middle">
+                    <Button onClick={() => removeProduto(record._id, produtos)}>Excluir Promoção</Button>
+                </Space>
+            ),
+        }
+    ];
+
     useEffect(() => {
         if (!promocao.tpCliente) { // Check if no client level is selected
             setProdutos([]); // Clear the products list
@@ -135,7 +228,17 @@ const Promocao = () => {
     const fecharProdutos = async () => {
         try {
             const response = await api.get('/produtos');
-            setProdutos(response.data.produtos);
+            const produtosPadrao = response.data.produtos.filter(produto => produto.role === 'padrao');
+            setProdutos(produtosPadrao);
+
+            const produtosFiltrados = response.data.produtos.filter(produto => {
+                // Filtra os produtos com a role de promoção e com o mesmo nível de cliente selecionado
+                return produto.role === 'promocao' && produto.tpClient === promocao.tpCliente;
+            });
+            setprodutosPromocionais(produtosFiltrados)
+            console.log(produtosPromocionais)
+            console.log(produtos)
+
         } catch (error) {
             console.error('Erro ao carregar produtos:', error);
         }
@@ -147,7 +250,7 @@ const Promocao = () => {
 
     const showModal = (produto) => {
         setProdutoSelecionado(produto);
-        setNovaPromocao({ ...produto, role: 'promocao' });  // Set initial values for novaPromocao
+        setNovaPromocao({ ...produto, role: 'promocao', tpClient: promocao.tpCliente });  // Set initial values for novaPromocao
         setIsModalVisible(true);
     };
 
@@ -181,6 +284,28 @@ const Promocao = () => {
                 <Table
                     columns={columns}
                     dataSource={produtos}
+                    onChange={(pagination, filters) => {
+                        if (filters.regiao && filters.regiao.length > 0) {
+                            setFiltroRegiao(filters.regiao[0]);
+                        } else {
+                            setFiltroRegiao(null);
+                        }
+                        if (filters.tipoCliente && filters.tipoCliente.length > 0) {
+                            setFiltroTipoCliente(filters.tipoCliente[0]);
+                        } else {
+                            setFiltroTipoCliente(null);
+                        }
+                    }}
+                    filters={{ regiao: [filtroRegiao], tipoCliente: [filtroTipoCliente] }}
+                />
+            </div>
+            
+            <h1> Promoções por tempo Limitado</h1>
+            
+            <div className="main-content-promocao">
+                <Table
+                    columns={columns2}
+                    dataSource={produtosPromocionais}
                     onChange={(pagination, filters) => {
                         if (filters.regiao && filters.regiao.length > 0) {
                             setFiltroRegiao(filters.regiao[0]);

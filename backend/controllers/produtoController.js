@@ -10,7 +10,7 @@ const PodutoController = {
         try{
 
 
-            const {cod, category, descricao, ml, regiao, valor, role} = req.body
+            const {cod, category, descricao, ml, regiao, valor, role, tpClient} = req.body
 
             if(!cod){
                 res.status(422).json({message: 'O Código é obrigatório'});
@@ -69,7 +69,8 @@ const PodutoController = {
                 ml, 
                 regiao,  
                 valor,
-                role
+                tpClient,
+                role,
             });
 
             try{
