@@ -211,7 +211,7 @@ const Promocao = () => {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <Button onClick={() => removeProduto(record._id, produtos)}>Excluir Promoção</Button>
+                    <Button danger onClick={() => removeProduto(record._id, produtos)}>Excluir Promoção</Button>
                 </Space>
             ),
         }
