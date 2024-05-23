@@ -10,8 +10,9 @@ const { Option } = Select;
 const Produtos = () => {
     const [filtroRegiao, setFiltroRegiao] = useState(null);
     const [filtroTipoCliente, setFiltroTipoCliente] = useState(null);
-    const [editandoProduto, setEditandoProduto] = useState(null);
-    const [modalVisivel, setModalVisivel] = useState(false);
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [produtoSelecionado, setProdutoSelecionado] = useState(null);
 
     const { setFlashMessage } = useFlashMessage();
 
@@ -97,14 +98,14 @@ const Produtos = () => {
                 <Space size='middle'>
                     <p>R$ {record.valor}</p>
                 </Space>
-            )  
+            )
         },
         {
             title: 'Ações',
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <a onClick={() => abrirModalEdicao(record)}>Editar</a>
+                    <Button onClick={() => showModal(record)}>Editar</Button>
                     <a onClick={() => removeProduto(record._id, produtos)}>Excluir</a>
                 </Space>
             ),
@@ -126,127 +127,128 @@ const Produtos = () => {
         }
     };
 
-    const abrirModalEdicao = (produto) => {
-        setEditandoProduto(produto);
-        setModalVisivel(true);
+    const showModal = (produto) => {
+        setProdutoSelecionado(produto);
+        setIsModalVisible(true);
     };
 
-    const fecharModalEdicao = () => {
-        setEditandoProduto(undefined);
-        setModalVisivel(false);
+    const handleCancel = () => {
+        setIsModalVisible(false);
+        setProdutoSelecionado(null);
     };
 
-    const handleSalvarEdicao = async (values) => {
+    const handleSalvarEdicao = async () => {
         let msgText = 'Atualização Realizada com sucesso!';
         let msgType = 'success';
         try {
             // Envia uma solicitação para atualizar o produto
-            const data = await api.put(`/produtos/edit/${editandoProduto._id}`, values).then((response) => {
+            const data = await api.put(`/produtos/edit/${produtoSelecionado._id}`, produtoSelecionado).then((response) => {
                 return response.data;
             });
 
-            // Atualiza a lista de produtos
-            fecharProdutos();
-            // Fecha o modal de edição
-            fecharModalEdicao();
         } catch (error) {
             console.error('Erro ao salvar edição:', error);
             msgText = error.response.data.message;
             msgType = 'error';
         }
         setFlashMessage(msgText, msgType);
+
+
+        setIsModalVisible(false);
+        setProdutoSelecionado(null);
     };
 
+
+
+    /*     const handleSalvarEdicao = async (values) => {
+            let msgText = 'Atualização Realizada com sucesso!';
+            let msgType = 'success';
+            try {
+                // Envia uma solicitação para atualizar o produto
+                const data = await api.put(`/produtos/edit/${editandoProduto._id}`, values).then((response) => {
+                    return response.data;
+                });
+    
+                // Atualiza a lista de produtos
+                fecharProdutos();
+                // Fecha o modal de edição
+                fecharModalEdicao();
+            } catch (error) {
+                console.error('Erro ao salvar edição:', error);
+                msgText = error.response.data.message;
+                msgType = 'error';
+            }
+            setFlashMessage(msgText, msgType);
+        }; */
+
     return (
-        <div className="main-content">
-            <a href="/addProdutos"><button className="btn" type="button">+ ADD PRODUTOS</button></a>
-            <Table
-                columns={columns}
-                dataSource={produtos}
-                onChange={(pagination, filters) => {
-                    if (filters.regiao && filters.regiao.length > 0) {
-                        setFiltroRegiao(filters.regiao[0]);
-                    } else {
-                        setFiltroRegiao(null);
-                    }
-                    if (filters.tipoCliente && filters.tipoCliente.length > 0) {
-                        setFiltroTipoCliente(filters.tipoCliente[0]);
-                    } else {
-                        setFiltroTipoCliente(null);
-                    }
-                }}
-                filters={{ regiao: [filtroRegiao], tipoCliente: [filtroTipoCliente] }}
-            />
+
+        <div >
+            <div className="main-content">
+                <a href="/addProdutos"><button className="btn" type="button">+ ADD PRODUTOS</button></a>
+                <Table
+                    columns={columns}
+                    dataSource={produtos}
+                    onChange={(pagination, filters) => {
+                        if (filters.regiao && filters.regiao.length > 0) {
+                            setFiltroRegiao(filters.regiao[0]);
+                        } else {
+                            setFiltroRegiao(null);
+                        }
+                        if (filters.tipoCliente && filters.tipoCliente.length > 0) {
+                            setFiltroTipoCliente(filters.tipoCliente[0]);
+                        } else {
+                            setFiltroTipoCliente(null);
+                        }
+                    }}
+                    filters={{ regiao: [filtroRegiao], tipoCliente: [filtroTipoCliente] }}
+                />
+            </div>
+
             <Modal
-                title="Editar Produto:"
-                open={modalVisivel}
-                onCancel={fecharModalEdicao}
-                footer={null}
+                title="Detalhes do Produto"
+                open={isModalVisible}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="cancel" onClick={handleCancel}>Cancelar</Button>,
+                    <Button key="add" type="primary" onClick={handleSalvarEdicao}>Adicionar Edição</Button>
+                ]}
             >
-                {editandoProduto && (
-                    <Form className='editar' onFinish={handleSalvarEdicao} initialValues={editandoProduto}>
-                        <Row gutter={20}> {/* Define o espaçamento entre as colunas */}
-                            <Col span={12}> {/* Define que esta coluna ocupará metade do espaço */}
-                                <Form.Item label="Código" name="cod">
-                                    <Input />
-                                </Form.Item>
-                                <Form.Item label="Categoria" name="category">
-                                    <Select>
-                                        <Option value="Suco">Suco</Option>
-                                        <Option value="Refrigerante">Refrigerante</Option>
-                                        <Option value="Energético">Energético</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}> {/* Define que esta coluna ocupará metade do espaço */}
-                                <Form.Item label="ML" name="ml">
-                                    <Input />
-                                </Form.Item>
-                                <Form.Item label="Valor" name="valor">
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row gutter={16}>
-                            <Col span={12}>
-                                <Form.Item label="Região" name="regiao">
-                                    <Select>
-                                        <Option value="PE">PE</Option>
-                                        <Option value="BA">BA</Option>
-                                        <Option value="RJ">RJ</Option>
-                                        <Option value="SP">SP</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item label="Tipo de Cliente" name="tpCliente">
-                                    <Select>
-                                        <Option value="Bronze">Bronze</Option>
-                                        <Option value="Prata">Prata</Option>
-                                        <Option value="Ouro">Ouro</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={24}>
-                                <Form.Item label="Descrição" name="descricao">
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={24}>
-                                <Form.Item>
-                                    <Button type="primary" htmlType="submit">Salvar</Button>
-                                    <Button onClick={fecharModalEdicao}>Cancelar</Button>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                    </Form>
-                )}
+                <Row gutter={[16, 16]}>
+                    <Col span={12}>
+                        <Form layout="vertical">
+                            <Form.Item label="Código">
+                                <Input className='input_promocao' name='cod' value={produtoSelecionado?.cod || ''} readOnly />
+                            </Form.Item>
+                            <Form.Item label="Categoria">
+                                <Input className='input_promocao' name='category' value={produtoSelecionado?.category || ''} onChange={(e) => setProdutoSelecionado({ ...produtoSelecionado, category: e.target.value })} />
+                            </Form.Item>
+                            <Form.Item label="Descrição">
+                                <Input className='input_promocao' name='descricao' value={produtoSelecionado?.descricao || ''} onChange={(e) => setProdutoSelecionado({ ...produtoSelecionado, descricao: e.target.value })} />
+                            </Form.Item>
+                        </Form>
+                    </Col>
+                    <Col span={12}>
+                        <Form layout="vertical">
+                            <Form.Item label="ML">
+                                <Input className='input_promocao' name='ml' value={produtoSelecionado?.ml || ''} onChange={(e) => setProdutoSelecionado({ ...produtoSelecionado, ml: e.target.value })} />
+                            </Form.Item>
+                            <Form.Item label="Região">
+                                <Input className='input_promocao' name='regiao' value={produtoSelecionado?.regiao || ''} onChange={(e) => setProdutoSelecionado({ ...produtoSelecionado, regiao: e.target.value })} />
+                            </Form.Item>
+                            <Form.Item label="Preço">
+                                <Input className='input_promocao' name='valor' value={produtoSelecionado?.valor || ''} onChange={(e) => setProdutoSelecionado({ ...produtoSelecionado, valor: e.target.value })} />
+                            </Form.Item>
+                        </Form>
+                    </Col>
+                </Row>
             </Modal>
+
+
+
+
         </div>
+
     );
 };
 

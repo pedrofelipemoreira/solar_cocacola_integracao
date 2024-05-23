@@ -10,9 +10,9 @@ const Promocao = () => {
     const [novaPromocao, setNovaPromocao] = useState({});
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [produtoSelecionado, setProdutoSelecionado] = useState(null);
-    const [produtosPromocionais, setprodutosPromocionais] = useState([]); 
+    const [produtosPromocionais, setprodutosPromocionais] = useState([]);
 
-    const {register} = functionsProduto();
+    const { register } = functionsProduto();
     const { removeProduto } = functionsProduto();
 
     function handleChangeTipoCliente(e) {
@@ -299,9 +299,9 @@ const Promocao = () => {
                     filters={{ regiao: [filtroRegiao], tipoCliente: [filtroTipoCliente] }}
                 />
             </div>
-            
+
             <h1> Promoções por tempo Limitado</h1>
-            
+
             <div className="main-content-promocao">
                 <Table
                     columns={columns2}
@@ -323,49 +323,49 @@ const Promocao = () => {
             </div>
 
             <Modal
-    title="Detalhes do Produto"
-    open={isModalVisible}
-    onCancel={handleCancel}
-    footer={[
-        <Button key="cancel" onClick={handleCancel}>Cancelar</Button>,
-        <Button key="add" type="primary" onClick={handleAddPromocao}>Adicionar Promoção</Button>
-    ]}
->
-    <Row gutter={[16, 16]}>
-        <Col span={12}>
-            <Form layout="vertical">
-                <Form.Item label="Código">
-                    <Input className='input_promocao' name='cod' value={produtoSelecionado?.cod || ''} readOnly />
-                </Form.Item>
-                <Form.Item label="Role">
-                    <Input className='input_promocao' name='role' value={"promocao"} readOnly />
-                </Form.Item>
-                <Form.Item label="Categoria">
-                    <Input className='input_promocao' name='category' value={produtoSelecionado?.category || ''} readOnly />
-                </Form.Item>
-                <Form.Item label="Descrição">
-                    <Input className='input_promocao' name='descricao' value={produtoSelecionado?.descricao || ''} readOnly />
-                </Form.Item>
-            </Form>
-        </Col>
-        <Col span={12}>
-            <Form layout="vertical">
-                <Form.Item label="ML">
-                    <Input className='input_promocao' name='ml' value={produtoSelecionado?.ml || ''} readOnly />
-                </Form.Item>
-                <Form.Item label="Região">
-                    <Input className='input_promocao' name='regiao' value={produtoSelecionado?.regiao || ''} readOnly />
-                </Form.Item>
-                <Form.Item label="tpCliente">
-                    <Input className='input_promocao' name='tpClient' value={promocao.tpCliente || ''} readOnly />
-                </Form.Item>
-                <Form.Item label="Preço">
-                    <Input className='input_promocao' name='valor' value={novaPromocao.valor || produtoSelecionado?.valor || ''} onChange={handleChangeNovaPromocao} />
-                </Form.Item>
-            </Form>
-        </Col>
-    </Row>
-</Modal>
+                title="Detalhes do Produto"
+                open={isModalVisible}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="cancel" onClick={handleCancel}>Cancelar</Button>,
+                    <Button key="add" type="primary" onClick={handleAddPromocao}>Adicionar Promoção</Button>
+                ]}
+            >
+                <Row gutter={[16, 16]}>
+                    <Col span={12}>
+                        <Form layout="vertical">
+                            <Form.Item label="Código">
+                                <Input className='input_promocao' name='cod' value={produtoSelecionado?.cod || ''} readOnly />
+                            </Form.Item>
+                            <Form.Item label="Role">
+                                <Input className='input_promocao' name='role' value={"promocao"} readOnly />
+                            </Form.Item>
+                            <Form.Item label="Categoria">
+                                <Input className='input_promocao' name='category' value={produtoSelecionado?.category || ''} readOnly />
+                            </Form.Item>
+                            <Form.Item label="Descrição">
+                                <Input className='input_promocao' name='descricao' value={produtoSelecionado?.descricao || ''} readOnly />
+                            </Form.Item>
+                        </Form>
+                    </Col>
+                    <Col span={12}>
+                        <Form layout="vertical">
+                            <Form.Item label="ML">
+                                <Input className='input_promocao' name='ml' value={produtoSelecionado?.ml || ''} readOnly />
+                            </Form.Item>
+                            <Form.Item label="Região">
+                                <Input className='input_promocao' name='regiao' value={produtoSelecionado?.regiao || ''} readOnly />
+                            </Form.Item>
+                            <Form.Item label="tpCliente">
+                                <Input className='input_promocao' name='tpClient' value={promocao.tpCliente || ''} readOnly />
+                            </Form.Item>
+                            <Form.Item label="Preço">
+                                <Input className='input_promocao' name='valor' value={novaPromocao.valor || produtoSelecionado?.valor || ''} onChange={handleChangeNovaPromocao} />
+                            </Form.Item>
+                        </Form>
+                    </Col>
+                </Row>
+            </Modal>
         </div>
     );
 }
