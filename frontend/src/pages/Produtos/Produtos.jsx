@@ -143,6 +143,11 @@ const Produtos = () => {
         try {
             // Envia uma solicitação para atualizar o produto
             const data = await api.put(`/produtos/edit/${produtoSelecionado._id}`, produtoSelecionado).then((response) => {
+
+                setProdutos(prevProdutos => prevProdutos.map(produto =>
+                    produto._id === produtoSelecionado._id ? produtoSelecionado : produto
+                ));
+
                 return response.data;
             });
 
@@ -221,7 +226,11 @@ const Produtos = () => {
                                 <Input className='input_promocao' name='cod' value={produtoSelecionado?.cod || ''} readOnly />
                             </Form.Item>
                             <Form.Item label="Categoria">
-                                <Input className='input_promocao' name='category' value={produtoSelecionado?.category || ''} onChange={(e) => setProdutoSelecionado({ ...produtoSelecionado, category: e.target.value })} />
+                                <Select name='category' value={produtoSelecionado?.category || ''} onChange={(value) => setProdutoSelecionado({ ...produtoSelecionado, category: value })}>
+                                    <Option value="Suco">Suco</Option>
+                                    <Option value="Refrigerante">Refrigerante</Option>
+                                    <Option value="Energético">Energético</Option>
+                                </Select>
                             </Form.Item>
                             <Form.Item label="Descrição">
                                 <Input className='input_promocao' name='descricao' value={produtoSelecionado?.descricao || ''} onChange={(e) => setProdutoSelecionado({ ...produtoSelecionado, descricao: e.target.value })} />
@@ -234,7 +243,12 @@ const Produtos = () => {
                                 <Input className='input_promocao' name='ml' value={produtoSelecionado?.ml || ''} onChange={(e) => setProdutoSelecionado({ ...produtoSelecionado, ml: e.target.value })} />
                             </Form.Item>
                             <Form.Item label="Região">
-                                <Input className='input_promocao' name='regiao' value={produtoSelecionado?.regiao || ''} onChange={(e) => setProdutoSelecionado({ ...produtoSelecionado, regiao: e.target.value })} />
+                                <Select name='regiao' value={produtoSelecionado?.regiao || ''} onChange={(value) => setProdutoSelecionado({ ...produtoSelecionado, regiao: value })}>
+                                    <Option value="PE">PE</Option>
+                                    <Option value="BA">BA</Option>
+                                    <Option value="RJ">RJ</Option>
+                                    <Option value="SP">SP</Option>
+                                </Select>
                             </Form.Item>
                             <Form.Item label="Preço">
                                 <Input className='input_promocao' name='valor' value={produtoSelecionado?.valor || ''} onChange={(e) => setProdutoSelecionado({ ...produtoSelecionado, valor: e.target.value })} />
