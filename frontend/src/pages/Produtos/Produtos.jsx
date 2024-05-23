@@ -98,7 +98,17 @@ const Produtos = () => {
                     <p>R$ {record.valor}</p>
                 </Space>
             )  
-        }, 
+        },
+        {
+            title: 'Ações',
+            key: 'action',
+            render: (_, record) => (
+                <Space size="middle">
+                    <a onClick={() => abrirModalEdicao(record)}>Editar</a>
+                    <a onClick={() => removeProduto(record._id, produtos)}>Excluir</a>
+                </Space>
+            ),
+        }
     ];
 
     useEffect(() => {
@@ -109,7 +119,8 @@ const Produtos = () => {
     const fecharProdutos = async () => {
         try {
             const response = await api.get('/produtos');
-            setProdutos(response.data.produtos);
+            const produtosFiltrados = response.data.produtos.filter(produto => produto.role === 'padrao');
+            setProdutos(produtosFiltrados);
         } catch (error) {
             console.error('Erro ao carregar produtos:', error);
         }
@@ -150,19 +161,7 @@ const Produtos = () => {
         <div className="main-content">
             <a href="/addProdutos"><button className="btn" type="button">+ ADD PRODUTOS</button></a>
             <Table
-                columns={[
-                    ...columns,
-                    {
-                        title: 'Ações',
-                        key: 'action',
-                        render: (_, record) => (
-                            <Space size="middle">
-                                <a onClick={() => abrirModalEdicao(record)}>Editar</a>
-                                <a onClick={() => removeProduto(record._id, produtos)}>Excluir</a>
-                            </Space>
-                        ),
-                    }
-                ]}
+                columns={columns}
                 dataSource={produtos}
                 onChange={(pagination, filters) => {
                     if (filters.regiao && filters.regiao.length > 0) {

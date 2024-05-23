@@ -27,6 +27,14 @@ const produtoSchema = new Schema({
             type: Number,
             required: true
         },
+        tpCliente: {
+            type: String,
+            required: false
+        },
+        role: {
+            type: String,
+            required:true
+        }
 
     },
 

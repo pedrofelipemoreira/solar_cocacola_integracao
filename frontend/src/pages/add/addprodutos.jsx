@@ -28,9 +28,11 @@ const AddProdutos = () => {
 
     e.preventDefault();
 
-    console.log(produto)
+    const produtoComRole = { ...produto, role: 'padrao' };
 
-    register(produto)
+    console.log(produtoComRole)
+
+    register(produtoComRole)
 
 };
 
@@ -40,7 +42,8 @@ const AddProdutos = () => {
       <Divider style={{ backgroundColor: "#9CA3AF" }} />
 
       <form className='line'>
-        <div className='smash'>Codigo*<input className="input" type="number" placeholder=" Novo" name="cod"  onChange={handleChange} /> </div>
+        <div className='smash'>Codigo*<input className="input" type="number" placeholder=" Código" name="cod"  onChange={handleChange} /> </div>
+        <div className='smash'>Role*<input value={"padrao"} className="input" type="text" name="role"  onChange={handleChange} disabled /> </div>
         <div className='smash'>
           Categoria*
           <select className="input" name="category" value={produto.category} onChange={handleChange} style={{ cursor: 'pointer' }}>

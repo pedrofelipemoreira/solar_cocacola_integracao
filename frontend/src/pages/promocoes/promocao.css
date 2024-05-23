@@ -40,3 +40,24 @@ div{
 }
 
 
+.bodyPromocao {
+    padding: 20px;
+}
+
+.input_promocao {
+    margin-bottom: 20px;
+    padding: 10px;
+    width: 200px;
+}
+
+.main-content-promocao {
+    margin-top: 20px;
+}
+
+.btn {
+    margin-bottom: 20px;
+}
+
+.ant-table {
+    margin-top: 20px;
+}

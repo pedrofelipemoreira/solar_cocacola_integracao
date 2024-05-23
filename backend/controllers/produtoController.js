@@ -9,7 +9,8 @@ const PodutoController = {
 
         try{
 
-            const {cod, category, descricao, ml, regiao, valor} = req.body
+
+            const {cod, category, descricao, ml, regiao, valor, role} = req.body
 
             if(!cod){
                 res.status(422).json({message: 'O Código é obrigatório'});
@@ -40,11 +41,24 @@ const PodutoController = {
                 res.status(422).json({message: 'O Valor é obrigatório'});
                 return;
             }
+            
+            if(!role){
+                res.status(422).json({message: 'A role é obrigatória'});
+                return;
+            }
 
             const ProdutoExist = await ProdutoModel.findOne({cod: cod})
 
-            if(ProdutoExist){
+            const promocaoExit = await ProdutoModel.findOne({cod: cod, role: role})
+
+
+            if(ProdutoExist && role != 'promocao'){
                 res.status(422).json({message: 'Código já cadastrado'});
+                return;
+            }
+
+            if(promocaoExit){
+                res.status(422).json({message: 'Promoção já cadastrada'});
                 return;
             }
 
@@ -54,7 +68,8 @@ const PodutoController = {
                 descricao, 
                 ml, 
                 regiao,  
-                valor
+                valor,
+                role
             });
 
             try{

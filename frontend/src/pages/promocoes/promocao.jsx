@@ -1,328 +1,130 @@
 import './promocao.css';
 import React, { useState, useEffect } from 'react';
 import api from '../../utils/api';
-import { Space, Table, Tag, Button, Select, Modal, Form, Input, Row, Col } from 'antd';
+import { Space, Table, Button, Modal, Form, Input, Select } from 'antd';
+
+import functionsProduto from '../Produtos/functionsProduto.jsx'
 
 const Promocao = () => {
     const [promocao, setPromocao] = useState({ tpCliente: '' });
+    const [novaPromocao, setNovaPromocao] = useState({});
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [produtoSelecionado, setProdutoSelecionado] = useState(null);
 
-    function handleChange(e) {
+    const {register} = functionsProduto();
+
+    function handleChangeTipoCliente(e) {
         setPromocao({ ...promocao, [e.target.name]: e.target.value });
     }
+
     const [filtroRegiao, setFiltroRegiao] = useState(null);
     const [filtroTipoCliente, setFiltroTipoCliente] = useState(null);
 
     var valor = 0;
-
     const [produtos, setProdutos] = useState([]);
 
-    let columns = [];
-
-    if(promocao.tpCliente === "bronze"){
-        columns = [
-            {
-                title: 'Código',
-                dataIndex: 'cod',
-                key: 'cod',
-                filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                    <div style={{ padding: 8 }}>
-                        <Input
-                            placeholder="Pesquisar Código"
-                            value={selectedKeys[0]}
-                            onChange={e => {
-                                setSelectedKeys(e.target.value ? [e.target.value] : []);
-                                confirm({ closeDropdown: false });
-                            }}
-                            style={{ marginBottom: 8, display: 'block' }}
-                        />
-                        <Button
-                            onClick={() => confirm()}
-                            size="small"
-                            style={{ width: 90, marginRight: 8 }}
-                        >
-                            Pesquisar
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                clearFilters();
-                                setSelectedKeys([]);
-                                confirm({ closeDropdown: true });
-                            }}
-                            size="small"
-                            style={{ width: 90 }}
-                        >
-                            Limpar
-                        </Button>
-                    </div>
-                ),
-                onFilter: (value, record) => record.cod.toString().toLowerCase().includes(value.toLowerCase())
-            },
-            {
-                title: 'Data',
-                dataIndex: 'updatedAt',
-                key: 'data',
-            },
-            {
-                title: 'Categoria',
-                dataIndex: 'category',
-                key: 'categoria',
-            },
-            {
-                title: 'Descrição',
-                dataIndex: 'descricao',
-                key: 'descricao',
-            },
-            {
-                title: 'ML',
-                dataIndex: 'ml',
-                key: 'ml',
-            },
-            {
-                title: 'Região',
-                dataIndex: 'regiao',
-                key: 'regiao',
-                filters: [
-                    { text: 'PE', value: 'PE' },
-                    { text: 'BA', value: 'BA' },
-                    { text: 'RJ', value: 'RJ' },
-                    { text: 'SP', value: 'SP' },
-                ],
-                onFilter: (value, record) => record.regiao.indexOf(value) === 0,
-    
-            },
-            {
-                title: 'Valor Original ',
-                dataIndex: 'valor',
-                key: 'valor',
-                render: (_, record) => (
-                    <Space size='middle'>
-                        <p>R$ {record.valor}</p>
-                    </Space>
-                )
-            },
-            {
-                title: 'Valor Promocional',
-                dataIndex: 'valor',
-                key: 'valor',
-                render: (_, record) => (
-                    <Space size='middle'>
-                        
-                        <p>R$ {(valor = record.valor * (1- (5 /100))).toFixed(2)}</p>
-                    </Space>
-                )
-            },
-            {
-                title: 'Ações',
-                key: 'action',
-                render: (_, record) => (
-                    <Space size="middle">
-                        <a >Editar {record.cod}</a>
-                        <a >Excluir</a>
-                    </Space>
-                ),
-            }
-        ];
-    }
-
-    if(promocao.tpCliente === "prata"){
-
-        columns = [
-            {
-                title: 'Código',
-                dataIndex: 'cod',
-                key: 'cod',
-                filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                    <div style={{ padding: 8 }}>
-                        <Input
-                            placeholder="Pesquisar Código"
-                            value={selectedKeys[0]}
-                            onChange={e => {
-                                setSelectedKeys(e.target.value ? [e.target.value] : []);
-                                confirm({ closeDropdown: false });
-                            }}
-                            style={{ marginBottom: 8, display: 'block' }}
-                        />
-                        <Button
-                            onClick={() => confirm()}
-                            size="small"
-                            style={{ width: 90, marginRight: 8 }}
-                        >
-                            Pesquisar
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                clearFilters();
-                                setSelectedKeys([]);
-                                confirm({ closeDropdown: true });
-                            }}
-                            size="small"
-                            style={{ width: 90 }}
-                        >
-                            Limpar
-                        </Button>
-                    </div>
-                ),
-                onFilter: (value, record) => record.cod.toString().toLowerCase().includes(value.toLowerCase())
-            },
-            {
-                title: 'Data',
-                dataIndex: 'updatedAt',
-                key: 'data',
-            },
-            {
-                title: 'Categoria',
-                dataIndex: 'category',
-                key: 'categoria',
-            },
-            {
-                title: 'Descrição',
-                dataIndex: 'descricao',
-                key: 'descricao',
-            },
-            {
-                title: 'ML',
-                dataIndex: 'ml',
-                key: 'ml',
-            },
-            {
-                title: 'Região',
-                dataIndex: 'regiao',
-                key: 'regiao',
-                filters: [
-                    { text: 'PE', value: 'PE' },
-                    { text: 'BA', value: 'BA' },
-                    { text: 'RJ', value: 'RJ' },
-                    { text: 'SP', value: 'SP' },
-                ],
-                onFilter: (value, record) => record.regiao.indexOf(value) === 0,
-    
-            },
-            {
-                title: 'Valor Original ',
-                dataIndex: 'valor',
-                key: 'valor',
-                render: (_, record) => (
-                    <Space size='middle'>
-                        <p>R$ {record.valor}</p>
-                    </Space>
-                )
-            },
-            {
-                title: 'Valor Promocional',
-                dataIndex: 'valor',
-                key: 'valor',
-                render: (_, record) => (
-                    <Space size='middle'>
-                        <p>R$ {(valor = record.valor * (1- (10 /100))).toFixed(2)}</p>
-                    </Space>
-                )
-            },
-        ];
-
-
-    }
-
-    if(promocao.tpCliente === "ouro"){
-
-        columns = [
-            {
-                title: 'Código',
-                dataIndex: 'cod',
-                key: 'cod',
-                filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                    <div style={{ padding: 8 }}>
-                        <Input
-                            placeholder="Pesquisar Código"
-                            value={selectedKeys[0]}
-                            onChange={e => {
-                                setSelectedKeys(e.target.value ? [e.target.value] : []);
-                                confirm({ closeDropdown: false });
-                            }}
-                            style={{ marginBottom: 8, display: 'block' }}
-                        />
-                        <Button
-                            onClick={() => confirm()}
-                            size="small"
-                            style={{ width: 90, marginRight: 8 }}
-                        >
-                            Pesquisar
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                clearFilters();
-                                setSelectedKeys([]);
-                                confirm({ closeDropdown: true });
-                            }}
-                            size="small"
-                            style={{ width: 90 }}
-                        >
-                            Limpar
-                        </Button>
-                    </div>
-                ),
-                onFilter: (value, record) => record.cod.toString().toLowerCase().includes(value.toLowerCase())
-            },
-            {
-                title: 'Data',
-                dataIndex: 'updatedAt',
-                key: 'data',
-            },
-            {
-                title: 'Categoria',
-                dataIndex: 'category',
-                key: 'categoria',
-            },
-            {
-                title: 'Descrição',
-                dataIndex: 'descricao',
-                key: 'descricao',
-            },
-            {
-                title: 'ML',
-                dataIndex: 'ml',
-                key: 'ml',
-            },
-            {
-                title: 'Região',
-                dataIndex: 'regiao',
-                key: 'regiao',
-                filters: [
-                    { text: 'PE', value: 'PE' },
-                    { text: 'BA', value: 'BA' },
-                    { text: 'RJ', value: 'RJ' },
-                    { text: 'SP', value: 'SP' },
-                ],
-                onFilter: (value, record) => record.regiao.indexOf(value) === 0,
-    
-            },
-            {
-                title: 'Valor Original ',
-                dataIndex: 'valor',
-                key: 'valor',
-                render: (_, record) => (
-                    <Space size='middle'>
-                        <p>R$ {record.valor}</p>
-                    </Space>
-                )
-            },
-            {
-                title: 'Valor Promocional',
-                dataIndex: 'valor',
-                key: 'valor',
-                render: (_, record) => (
-                    <Space size='middle'>
-                        <p>R$ {(valor = record.valor * (1- (15 /100))).toFixed(2)}</p>
-                    </Space>
-                )
-            },
-        ];
-
-
-    }
-
+    let columns = [
+        {
+            title: 'Código',
+            dataIndex: 'cod',
+            key: 'cod',
+            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+                <div style={{ padding: 8 }}>
+                    <Input
+                        placeholder="Pesquisar Código"
+                        value={selectedKeys[0]}
+                        onChange={e => {
+                            setSelectedKeys(e.target.value ? [e.target.value] : []);
+                            confirm({ closeDropdown: false });
+                        }}
+                        style={{ marginBottom: 8, display: 'block' }}
+                    />
+                    <Button
+                        onClick={() => confirm()}
+                        size="small"
+                        style={{ width: 90, marginRight: 8 }}
+                    >
+                        Pesquisar
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            clearFilters();
+                            setSelectedKeys([]);
+                            confirm({ closeDropdown: true });
+                        }}
+                        size="small"
+                        style={{ width: 90 }}
+                    >
+                        Limpar
+                    </Button>
+                </div>
+            ),
+            onFilter: (value, record) => record.cod.toString().toLowerCase().includes(value.toLowerCase())
+        },
+        {
+            title: 'Data',
+            dataIndex: 'updatedAt',
+            key: 'data',
+        },
+        {
+            title: 'Categoria',
+            dataIndex: 'category',
+            key: 'categoria',
+        },
+        {
+            title: 'Descrição',
+            dataIndex: 'descricao',
+            key: 'descricao',
+        },
+        {
+            title: 'ML',
+            dataIndex: 'ml',
+            key: 'ml',
+        },
+        {
+            title: 'Região',
+            dataIndex: 'regiao',
+            key: 'regiao',
+            filters: [
+                { text: 'PE', value: 'PE' },
+                { text: 'BA', value: 'BA' },
+                { text: 'RJ', value: 'RJ' },
+                { text: 'SP', value: 'SP' },
+            ],
+            onFilter: (value, record) => record.regiao.indexOf(value) === 0,
+        },
+        {
+            title: 'Valor Original ',
+            dataIndex: 'valor',
+            key: 'valor',
+            render: (_, record) => (
+                <Space size='middle'>
+                    <p>R$ {(record.valor).toFixed(2)}</p>
+                </Space>
+            )
+        },
+        {
+            title: 'Valor Promocional',
+            dataIndex: 'valor',
+            key: 'valorPromocional',
+            render: (_, record) => (
+                <Space size='middle'>
+                    <p>R$ {(record.valor * (1 - (promocao.tpCliente === "bronze" ? 5 : promocao.tpCliente === "prata" ? 10 : promocao.tpCliente === "ouro" ? 15 : 0) / 100)).toFixed(2)}</p>
+                </Space>
+            )
+        },
+        {
+            title: 'Ações',
+            key: 'action',
+            render: (_, record) => (
+                <Space size="middle">
+                    <Button onClick={() => showModal(record)}>Add Promoção</Button>
+                </Space>
+            ),
+        }
+    ];
 
     useEffect(() => {
-        // Carrega os produtos quando o componente é montado
         fecharProdutos();
     }, []);
 
@@ -335,57 +137,46 @@ const Promocao = () => {
         }
     };
 
+    function handleChangeNovaPromocao(e) {
+        setNovaPromocao({ ...novaPromocao, [e.target.name]: e.target.value });
+    }
+
+    const showModal = (produto) => {
+        setProdutoSelecionado(produto);
+        setNovaPromocao({ ...produto, role: 'promocao' });  // Set initial values for novaPromocao
+        setIsModalVisible(true);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+        setProdutoSelecionado(null);
+    };
+
+    const handleAddPromocao = () => {
+        // Lógica para adicionar promoção
+        setIsModalVisible(false);
+        setProdutoSelecionado(null);
+
+        console.log(novaPromocao);
+
+        register(novaPromocao)
+    };
+
     return (
-        
         <div className='bodyPromocao'>
+            <h1>Selecione o nível do cliente para ver suas promoções</h1>
 
-            <h1>Selecione o nivel do cliente para ver suas promoções</h1>
-
-            <select className="input" onChange={handleChange} name="tpCliente" style={{ cursor: 'pointer' }}>
+            <select className="input" onChange={handleChangeTipoCliente} name="tpCliente" style={{ cursor: 'pointer' }}>
                 <option value="">Selecione...</option>
                 <option value="bronze">Bronze</option>
                 <option value="prata">Prata</option>
                 <option value="ouro">Ouro</option>
             </select>
 
-            {promocao.tpCliente === "bronze" && (
-                <div className="main-content-promocao">
-                    
-                    <a href="/addProdutos"><button className="btn" type="button">+ ADD PROMOÇÃO</button></a>
-                  
-                    <Table
-                        columns={[
-                            ...columns,
-                        ]}
-                        dataSource={produtos}
-                        // Aplica os filtros de região e tipo de cliente
-                        onChange={(pagination, filters) => {
-                            if (filters.regiao && filters.regiao.length > 0) {
-                                setFiltroRegiao(filters.regiao[0]);
-                            } else {
-                                setFiltroRegiao(null);
-                            }
-                            if (filters.tipoCliente && filters.tipoCliente.length > 0) {
-                                setFiltroTipoCliente(filters.tipoCliente[0]);
-                            } else {
-                                setFiltroTipoCliente(null);
-                            }
-                        }}
-                        filters={{ regiao: [filtroRegiao], tipoCliente: [filtroTipoCliente] }}
-                    />
-                </div>
-            )}
-
-            {promocao.tpCliente === "prata" && (
-                <div className="main-content-promocao">
-                    <a href="/addProdutos"><button className="btn" type="button">+ ADD PROMOÇÃO</button></a>
-                  
+            <div className="main-content-promocao">
                 <Table
-                    columns={[
-                        ...columns,
-                    ]}
+                    columns={columns}
                     dataSource={produtos}
-                    // Aplica os filtros de região e tipo de cliente
                     onChange={(pagination, filters) => {
                         if (filters.regiao && filters.regiao.length > 0) {
                             setFiltroRegiao(filters.regiao[0]);
@@ -401,35 +192,40 @@ const Promocao = () => {
                     filters={{ regiao: [filtroRegiao], tipoCliente: [filtroTipoCliente] }}
                 />
             </div>
-            )}
 
-            {promocao.tpCliente === "ouro" && (
-                <div className="main-content-promocao">
-                    <a href="/addProdutos"><button className="btn" type="button">+ ADD PROMOÇÃO</button></a>
-                  
-                <Table
-                    columns={[
-                        ...columns,
-                    ]}
-                    dataSource={produtos}
-                    // Aplica os filtros de região e tipo de cliente
-                    onChange={(pagination, filters) => {
-                        if (filters.regiao && filters.regiao.length > 0) {
-                            setFiltroRegiao(filters.regiao[0]);
-                        } else {
-                            setFiltroRegiao(null);
-                        }
-                        if (filters.tipoCliente && filters.tipoCliente.length > 0) {
-                            setFiltroTipoCliente(filters.tipoCliente[0]);
-                        } else {
-                            setFiltroTipoCliente(null);
-                        }
-                    }}
-                    filters={{ regiao: [filtroRegiao], tipoCliente: [filtroTipoCliente] }}
-                />
-            </div>
-            
-            )}
+            <Modal
+                title="Detalhes do Produto"
+                open={isModalVisible}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="cancel" onClick={handleCancel}>Cancelar</Button>,
+                    <Button key="add" type="primary" onClick={handleAddPromocao}>Add Promoção</Button>
+                ]}
+            >
+                <Form layout="vertical">
+                    <Form.Item label="Código">
+                        <Input className='input_promocao' name='cod' value={produtoSelecionado?.cod || ''} readOnly />
+                    </Form.Item>
+                    <Form.Item label="Role">
+                        <Input className='input_promocao' name='role' value={"promocao"} readOnly />
+                    </Form.Item>
+                    <Form.Item label="Categoria">
+                        <Input className='input_promocao' name='category' value={produtoSelecionado?.category || ''} readOnly />
+                    </Form.Item>
+                    <Form.Item label="Descrição">
+                        <Input className='input_promocao' name='descricao' value={produtoSelecionado?.descricao || ''} readOnly />
+                    </Form.Item>
+                    <Form.Item label="ML">
+                        <Input className='input_promocao' name='ml' value={produtoSelecionado?.ml || ''} readOnly />
+                    </Form.Item>
+                    <Form.Item label="Região">
+                        <Input className='input_promocao' name='regiao' value={produtoSelecionado?.regiao || ''} readOnly />
+                    </Form.Item>
+                    <Form.Item label="Preço">
+                        <Input className='input_promocao' name='valor' value={novaPromocao.valor || produtoSelecionado?.valor || ''} onChange={handleChangeNovaPromocao} />
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     );
 }
