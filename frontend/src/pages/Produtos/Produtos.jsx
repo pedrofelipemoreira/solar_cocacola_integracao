@@ -165,27 +165,6 @@ const Produtos = () => {
 
 
 
-    /*     const handleSalvarEdicao = async (values) => {
-            let msgText = 'Atualização Realizada com sucesso!';
-            let msgType = 'success';
-            try {
-                // Envia uma solicitação para atualizar o produto
-                const data = await api.put(`/produtos/edit/${editandoProduto._id}`, values).then((response) => {
-                    return response.data;
-                });
-    
-                // Atualiza a lista de produtos
-                fecharProdutos();
-                // Fecha o modal de edição
-                fecharModalEdicao();
-            } catch (error) {
-                console.error('Erro ao salvar edição:', error);
-                msgText = error.response.data.message;
-                msgType = 'error';
-            }
-            setFlashMessage(msgText, msgType);
-        }; */
-
     return (
 
         <div >
@@ -216,7 +195,7 @@ const Produtos = () => {
                 onCancel={handleCancel}
                 footer={[
                     <Button key="cancel" onClick={handleCancel}>Cancelar</Button>,
-                    <Button key="add" type="primary" onClick={handleSalvarEdicao}>Adicionar Edição</Button>
+                    <Button key="add" type="primary" onClick={handleSalvarEdicao}>Salvar Edição</Button>
                 ]}
             >
                 <Row gutter={[16, 16]}>
@@ -257,9 +236,6 @@ const Produtos = () => {
                     </Col>
                 </Row>
             </Modal>
-
-
-
 
         </div>
 

@@ -10,8 +10,10 @@ const { Option } = Select;
 const Cliente = () => {
     const [filtroRegiao, setFiltroRegiao] = useState(null);
     const [filtroTipoCliente, setFiltroTipoCliente] = useState(null);
-    const [editandoClient, setEditandoClient] = useState(null);
-    const [modalVisivel, setModalVisivel] = useState(false);
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [clienteSelecionado, setClienteSelecionado] = useState(null);
+
 
     const { setFlashMessage } = useFlashMessage();
     const [clients, setClients] = useState([]);
@@ -56,7 +58,7 @@ const Cliente = () => {
             key: 'cidade',
         },
         {
-            title: 'Bairro', 
+            title: 'Bairro',
             dataIndex: 'bairro',
             key: 'bairro',
         },
@@ -129,113 +131,157 @@ const Cliente = () => {
         }
     };
 
-    const abrirModalEdicao = (client) => {
-        setEditandoClient(client);
-        setModalVisivel(true);
+    const showModal = (produto) => {
+        setClienteSelecionado(produto);
+        setIsModalVisible(true);
     };
 
-    const fecharModalEdicao = () => {
-        setEditandoClient(null);
-        setModalVisivel(false);
+    const handleCancel = () => {
+        setIsModalVisible(false);
+        setClienteSelecionado(null);
     };
 
-    const handleSalvarEdicao = (values) => {
-        // Lógica para salvar a edição do cliente
-        console.log('Valores editados:', values);
-        fecharModalEdicao();
+    const handleSalvarEdicao = async () => {
+
+        let msgText = 'Atualização Realizada com sucesso!';
+        let msgType = 'success';
+
+        try{
+
+            const data = await api.put(`/clients/edit/${clienteSelecionado._id}`, clienteSelecionado).then((response) =>{
+                setClients(prevClients => prevClients.map(client =>
+                    client._id === clienteSelecionado._id ? clienteSelecionado : client
+                ));
+
+                return response.data;
+            });
+
+
+        }catch(error){
+            console.error('Erro ao salvar edição:', error);
+            msgText = error.response.data.message;
+            msgType = 'error';
+        }
+        setFlashMessage(msgText, msgType);
+
+
+        setIsModalVisible(false);
+        setProdutoSelecionado(null);
+
     };
 
     return (
-        <div className="main-content">
-            <a href="/addCliente"><button className="btn" type="button">+ ADD CLIENTES</button></a>
-            <Table
-                columns={[
-                    ...columns,
-                    {
-                        title: 'Ações',
-                        key: 'action',
-                        render: (_, record) => (
-                            <Space size="middle">
-                                <a onClick={() => abrirModalEdicao(record)}>Editar {record.cod}</a>
-                                <a onClick={() => removeClient(record._id, clients)}>Excluir</a>
-                            </Space>
-                        ),
-                    }
-                ]}
-                dataSource={clients}
-                // Aplica os filtros de região e tipo de cliente
-                onChange={(pagination, filters) => {
-                    if (filters.regiao && filters.regiao.length > 0) {
-                        setFiltroRegiao(filters.regiao[0]);
-                    } else {
-                        setFiltroRegiao(null);
-                    }
-                    if (filters.tipoCliente && filters.tipoCliente.length > 0) {
-                        setFiltroTipoCliente(filters.tipoCliente[0]);
-                    } else {
-                        setFiltroTipoCliente(null);
-                    }
-                }}
-                filters={{ regiao: [filtroRegiao], tipoCliente: [filtroTipoCliente] }}
-            />
+        <div>
+            <div className="main-content">
+                <a href="/addCliente"><button className="btn" type="button">+ ADD CLIENTES</button></a>
+                <Table
+                    columns={[
+                        ...columns,
+                        {
+                            title: 'Ações',
+                            key: 'action',
+                            render: (_, record) => (
+                                <Space size="middle">
+                                    <Button onClick={() => showModal(record)}>Editar</Button>
+                                    <a onClick={() => removeClient(record._id, clients)}>Excluir</a>
+                                </Space>
+                            ),
+                        }
+                    ]}
+                    dataSource={clients}
+                    // Aplica os filtros de região e tipo de cliente
+                    onChange={(pagination, filters) => {
+                        if (filters.regiao && filters.regiao.length > 0) {
+                            setFiltroRegiao(filters.regiao[0]);
+                        } else {
+                            setFiltroRegiao(null);
+                        }
+                        if (filters.tipoCliente && filters.tipoCliente.length > 0) {
+                            setFiltroTipoCliente(filters.tipoCliente[0]);
+                        } else {
+                            setFiltroTipoCliente(null);
+                        }
+                    }}
+                    filters={{ regiao: [filtroRegiao], tipoCliente: [filtroTipoCliente] }}
+                />
+            </div>
             <Modal
-                title="Editar Cliente"
-                open={modalVisivel}
-                onCancel={fecharModalEdicao}
-                footer={null}
+                title="Detalhes do Produto"
+                open={isModalVisible}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="cancel" onClick={handleCancel}>Cancelar</Button>,
+                    <Button key="add" type="primary" onClick={handleSalvarEdicao}>Salvar Edição</Button>
+                ]}
             >
-                {editandoClient && (
-                    <Form className='editar' onFinish={handleSalvarEdicao} initialValues={editandoClient}>
-                        <Row gutter={20}>
-                            <Col span={12}>
-                                <Form.Item label="Nome" name="name">
-                                    <Input />
-                                </Form.Item>
-                                <Form.Item label="CEP" name="cep">
-                                    <Input />
-                                </Form.Item>
-                                <Form.Item label="Cidade" name="cidade">
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item label="UF" name="uf">
-                                    <Select>
-                                        <Option value="PE">PE</Option>
-                                        <Option value="BA">BA</Option>
-                                        <Option value="RJ">RJ</Option>
-                                        <Option value="SP">SP</Option>
-                                    </Select>
-                                </Form.Item>
-                                <Form.Item label="Bairro" name="bairro">
-                                    <Input />
-                                </Form.Item>
-                                <Form.Item label="Logradouro" name="logradouro">
-                                    <Input />
-                                </Form.Item>
-                                <Form.Item label="Tipo de Cliente" name="tpCliente">
-                                    <Select>
-                                        <Option value="Bronze">Bronze</Option>
-                                        <Option value="Prata">Prata</Option>
-                                        <Option value="Ouro">Ouro</Option>
-                                    </Select>
-                                </Form.Item>
-                                <Form.Item label="CNPJ" name="cnpj">
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={24}>
-                                <Form.Item>
-                                    <Button type="primary" htmlType="submit">Salvar</Button>
-                                    <Button onClick={fecharModalEdicao}>Cancelar</Button>
-                                </Form.Item>
-                            </Col>
-                        </Row>
+
+            <Row gutter={[16, 16]}>
+                <Col span={12}>
+                    <Form layout="vertical">
+                        <Form.Item label="Categoria">
+
+                            <Select name='category' value={clienteSelecionado?.category || ''} onChange={(value) => setClienteSelecionado({ ...clienteSelecionado, category: value })}>
+                                <Option value="Suco">Bar</Option>
+                                <Option value="Refrigerante">Padaria</Option>
+                                <Option value="Energético">Restaurante</Option>
+                            </Select>
+
+                        </Form.Item>
+
+                        <Form.Item label="Nome">
+                            <Input className='input_promocao' name='name' value={clienteSelecionado?.name || ''} onChange={(e) => setClienteSelecionado({ ...clienteSelecionado, name: e.target.value })} />
+                        </Form.Item>
+
+                        <Form.Item label="CEP">
+                            <Input className='input_promocao' name='cep' value={clienteSelecionado?.cep || ''} onChange={(e) => setClienteSelecionado({ ...clienteSelecionado, cep: e.target.value })} />
+                        </Form.Item>
+
+                        <Form.Item label="Cidade">
+                            <Input className='input_promocao' name='cidade' value={clienteSelecionado?.cidade || ''} onChange={(e) => setClienteSelecionado({ ...clienteSelecionado, cidade: e.target.value })} />
+                        </Form.Item>
+
+                        <Form.Item label="Bairro">
+                            <Input className='input_promocao' name='bairro' value={clienteSelecionado?.bairro || ''} onChange={(e) => setClienteSelecionado({ ...clienteSelecionado, bairro: e.target.value })} />
+                        </Form.Item>
+
                     </Form>
-                )}
+                </Col>
+                <Col span={12}>
+                    <Form layout="vertical">
+
+                        <Form.Item label="Logradouro">
+                            <Input className='input_promocao' name='logradouro' value={clienteSelecionado?.logradouro || ''} onChange={(e) => setClienteSelecionado({ ...clienteSelecionado, logradouro: e.target.value })} />
+                        </Form.Item>
+
+                        <Form.Item label="UF">
+                            
+                            <Select name='uf' value={clienteSelecionado?.uf || ''} onChange={(value) => setClienteSelecionado({ ...clienteSelecionado, uf: value })}>
+                                <Option value="PE">PE</Option>
+                                <Option value="BA">BA</Option>
+                                <Option value="RJ">RJ</Option>
+                                <Option value="SP">SP</Option>
+                            </Select>
+
+                        </Form.Item>
+
+                        <Form.Item label="Tipo Cliente">
+                            
+                            <Select name='tpCliente' value={clienteSelecionado?.tpCliente || ''} onChange={(value) => setClienteSelecionado({ ...clienteSelecionado, tpCliente: value })}>
+                                <Option value="Bronze">Bronze</Option>
+                                <Option value="Prata">Prata</Option>
+                                <Option value="Ouro">Ouro</Option>
+                            </Select>
+                            
+                        </Form.Item>
+
+                        <Form.Item label="CNPJ">
+                            <Input className='input_promocao' name='cnpj' value={clienteSelecionado?.cnpj || ''} onChange={(e) => setClienteSelecionado({ ...clienteSelecionado, cnpj: e.target.value })} />
+                        </Form.Item>
+                    </Form>
+                </Col>
+            </Row>
             </Modal>
+
         </div>
     );
 };
