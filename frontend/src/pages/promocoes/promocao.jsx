@@ -1,7 +1,7 @@
 import './promocao.css';
 import React, { useState, useEffect } from 'react';
 import api from '../../utils/api';
-import { Space, Table, Button, Modal, Form, Input, Select } from 'antd';
+import { Space, Table, Button, Modal, Form, Input, Select, Row, Col } from 'antd';
 
 import functionsProduto from '../Produtos/functionsProduto.jsx'
 
@@ -125,8 +125,12 @@ const Promocao = () => {
     ];
 
     useEffect(() => {
-        fecharProdutos();
-    }, []);
+        if (!promocao.tpCliente) { // Check if no client level is selected
+            setProdutos([]); // Clear the products list
+        } else {
+            fecharProdutos(); // Fetch products only if client level is selected
+        }
+    }, [promocao.tpCliente]); // Re-run effect when client level changes
 
     const fecharProdutos = async () => {
         try {
@@ -194,38 +198,49 @@ const Promocao = () => {
             </div>
 
             <Modal
-                title="Detalhes do Produto"
-                open={isModalVisible}
-                onCancel={handleCancel}
-                footer={[
-                    <Button key="cancel" onClick={handleCancel}>Cancelar</Button>,
-                    <Button key="add" type="primary" onClick={handleAddPromocao}>Add Promoção</Button>
-                ]}
-            >
-                <Form layout="vertical">
-                    <Form.Item label="Código">
-                        <Input className='input_promocao' name='cod' value={produtoSelecionado?.cod || ''} readOnly />
-                    </Form.Item>
-                    <Form.Item label="Role">
-                        <Input className='input_promocao' name='role' value={"promocao"} readOnly />
-                    </Form.Item>
-                    <Form.Item label="Categoria">
-                        <Input className='input_promocao' name='category' value={produtoSelecionado?.category || ''} readOnly />
-                    </Form.Item>
-                    <Form.Item label="Descrição">
-                        <Input className='input_promocao' name='descricao' value={produtoSelecionado?.descricao || ''} readOnly />
-                    </Form.Item>
-                    <Form.Item label="ML">
-                        <Input className='input_promocao' name='ml' value={produtoSelecionado?.ml || ''} readOnly />
-                    </Form.Item>
-                    <Form.Item label="Região">
-                        <Input className='input_promocao' name='regiao' value={produtoSelecionado?.regiao || ''} readOnly />
-                    </Form.Item>
-                    <Form.Item label="Preço">
-                        <Input className='input_promocao' name='valor' value={novaPromocao.valor || produtoSelecionado?.valor || ''} onChange={handleChangeNovaPromocao} />
-                    </Form.Item>
-                </Form>
-            </Modal>
+    title="Detalhes do Produto"
+    open={isModalVisible}
+    onCancel={handleCancel}
+    footer={[
+        <Button key="cancel" onClick={handleCancel}>Cancelar</Button>,
+        <Button key="add" type="primary" onClick={handleAddPromocao}>Adicionar Promoção</Button>
+    ]}
+>
+    <Row gutter={[16, 16]}>
+        <Col span={12}>
+            <Form layout="vertical">
+                <Form.Item label="Código">
+                    <Input className='input_promocao' name='cod' value={produtoSelecionado?.cod || ''} readOnly />
+                </Form.Item>
+                <Form.Item label="Role">
+                    <Input className='input_promocao' name='role' value={"promocao"} readOnly />
+                </Form.Item>
+                <Form.Item label="Categoria">
+                    <Input className='input_promocao' name='category' value={produtoSelecionado?.category || ''} readOnly />
+                </Form.Item>
+                <Form.Item label="Descrição">
+                    <Input className='input_promocao' name='descricao' value={produtoSelecionado?.descricao || ''} readOnly />
+                </Form.Item>
+            </Form>
+        </Col>
+        <Col span={12}>
+            <Form layout="vertical">
+                <Form.Item label="ML">
+                    <Input className='input_promocao' name='ml' value={produtoSelecionado?.ml || ''} readOnly />
+                </Form.Item>
+                <Form.Item label="Região">
+                    <Input className='input_promocao' name='regiao' value={produtoSelecionado?.regiao || ''} readOnly />
+                </Form.Item>
+                <Form.Item label="tpCliente">
+                    <Input className='input_promocao' name='tpClient' value={promocao.tpCliente || ''} readOnly />
+                </Form.Item>
+                <Form.Item label="Preço">
+                    <Input className='input_promocao' name='valor' value={novaPromocao.valor || produtoSelecionado?.valor || ''} onChange={handleChangeNovaPromocao} />
+                </Form.Item>
+            </Form>
+        </Col>
+    </Row>
+</Modal>
         </div>
     );
 }

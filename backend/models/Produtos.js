@@ -27,7 +27,7 @@ const produtoSchema = new Schema({
             type: Number,
             required: true
         },
-        tpCliente: {
+        tpClient: {
             type: String,
             required: false
         },
