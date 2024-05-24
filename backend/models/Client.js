@@ -39,8 +39,7 @@ const clientSchema = new Schema({
         cnpj: {
             type: String,
             required: true
-        }
-
+        },
 
     },
 

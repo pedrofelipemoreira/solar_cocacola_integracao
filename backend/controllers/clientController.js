@@ -146,6 +146,48 @@ const ClientController = {
 
     },
 
+    addProductToClient: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { produtoId } = req.body;
+
+            // Verifica se o ID do cliente é válido
+            if (!isValidObjectId(id)) {
+                res.status(422).json({ message: 'ID de cliente inválido' });
+                return;
+            }
+
+            // Verifica se o cliente existe
+            const client = await ClientModel.findById(id);
+            if (!client) {
+                res.status(404).json({ message: 'Cliente não encontrado' });
+                return;
+            }
+
+            // Verifica se o ID do produto é válido
+            if (!isValidObjectId(produtoId)) {
+                res.status(422).json({ message: 'ID de produto inválido' });
+                return;
+            }
+
+            // Verifica se o produto existe
+            const produto = await ProdutoModel.findById(produtoId);
+            if (!produto) {
+                res.status(404).json({ message: 'Produto não encontrado' });
+                return;
+            }
+
+            // Adiciona o produto ao cliente
+            client.produtos.push(produtoId);
+            await client.save();
+
+            res.status(200).json({ client, message: 'Produto adicionado ao cliente com sucesso' });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ message: 'Erro interno do servidor' });
+        }
+    },
+
     removeClientById: async(req, res) => {
 
         try{

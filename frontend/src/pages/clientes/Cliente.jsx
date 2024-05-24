@@ -184,6 +184,7 @@ const Cliente = () => {
                                 <Space size="middle">
                                     <Button onClick={() => showModal(record)}>Editar</Button>
                                     <Button danger onClick={() => removeClient(record._id, clients)}>Excluir</Button>
+                                    <Button href={`${record._id}/meusProdutos `}>Meus Produtos</Button>
                                 </Space>
                             ),
                         }

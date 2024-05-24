@@ -18,8 +18,10 @@ router.route('/:id')
 router.route('/edit/:id')
 .put((req, res) => clientController.editClientUpdate(req, res));
 
+router.route('/:id/add-product')
+.post((req, res) => clientController.addProductToClient(req, res));
 
-export default router;
+export default router; 
 
 
 
