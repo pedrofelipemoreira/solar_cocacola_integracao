@@ -126,6 +126,7 @@ const Cliente = () => {
         try {
             const response = await api.get('/clients');
             setClients(response.data.clients);
+            console.log(response.data.clients)
         } catch (error) {
             console.error('Erro ao carregar Clientes:', error);
         }
@@ -184,7 +185,7 @@ const Cliente = () => {
                                 <Space size="middle">
                                     <Button onClick={() => showModal(record)}>Editar</Button>
                                     <Button danger onClick={() => removeClient(record._id, clients)}>Excluir</Button>
-                                    <Button href={`${record._id}/meusProdutos `}>Meus Produtos</Button>
+                                    <Button href={`/meusProdutos/${record._id} `}>Meus Produtos</Button>
                                 </Space>
                             ),
                         }

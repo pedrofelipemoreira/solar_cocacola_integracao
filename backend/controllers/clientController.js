@@ -1,5 +1,6 @@
 import { isValidObjectId } from 'mongoose';
 import { Client } from '../models/Client.js';
+import { Produto } from '../models/Produtos.js'
 
 import { response } from 'express';
 
@@ -101,6 +102,66 @@ const ClientController = {
         }
     },
 
+    addProductsToClient: async (req, res) => {
+        const id = req.params.id
+        const { productIds } = req.body;
+      
+        try {
+
+
+            if(!isValidObjectId(id)){
+                res.status(422).json({message: 'Id Invalido'});
+                return; 
+            }
+
+            const client = await ClientModel.findById(id);
+
+            if(!client){
+                res.status(404).json({message: 'Cliente não encotrado'});
+                return; 
+            }
+      
+          // Verificar se todos os produtos existem
+          const products = await Produto.find({ _id: { $in: productIds } });
+          if (products.length !== productIds.length) {
+            return res.status(400).json({ message: 'Alguns produtos não foram encontrados' });
+          }
+      
+          // Adicionar os produtos ao cliente
+          client.products.push(...productIds);
+          await client.save();
+      
+          res.status(200).json({ message: 'Produtos adicionados ao cliente com sucesso' });
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: 'Erro ao adicionar produtos ao cliente' });
+        }
+      },
+
+      getClientProducts: async (req, res) => {
+        const id = req.params.id
+      
+        try {
+          // Encontrar o cliente pelo ID e popular o campo 'products' com os detalhes dos produtos
+            if(!isValidObjectId(id)){
+                res.status(422).json({message: 'Id Invalido'});
+                return; 
+            }
+
+            const client = await ClientModel.findById(id);
+
+            if(!client){
+                res.status(404).json({message: 'Cliente não encotrado'});
+                return; 
+            }
+      
+          res.status(200).json({ produtos: client.products });
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: 'Erro ao obter produtos do cliente' });
+        }
+      },
+
     showClient: async (req, res) =>{
 
         try{
@@ -146,7 +207,7 @@ const ClientController = {
 
     },
 
-    addProductToClient: async (req, res) => {
+/*     addProductToClient: async (req, res) => {
         try {
             const { id } = req.params;
             const { produtoId } = req.body;
@@ -186,7 +247,7 @@ const ClientController = {
             console.log(error);
             res.status(500).json({ message: 'Erro interno do servidor' });
         }
-    },
+    }, */
 
     removeClientById: async(req, res) => {
 

@@ -27,7 +27,7 @@ function Rotas() {
         <Route path="/cliente" element={<Cliente />} />
         <Route path="/AddCliente" element={<AddCliente />} />
         <Route path="/promocoes" element={<Promocao />} />
-        <Route path=":id/meusProdutos" element={<MeusProdutos/>}/>
+        <Route path="/meusprodutos/:id" element={<MeusProdutos/>}/>
 
       </Routes>
     </BrowserRouter>
