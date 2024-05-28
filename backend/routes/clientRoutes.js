@@ -28,6 +28,7 @@ router.route('/:id/products')
 .get((req, res) => clientController.getClientProducts(req, res));
 
 router.route('/:id/products/:productId')
+.delete((req, res) => clientController.deleteProductFromClient(req, res));
 
 export default router; 
 

@@ -131,7 +131,7 @@ const ClientController = {
     
             // Se todos os produtos forem duplicados, retorne uma mensagem informando ao cliente
             if (newProducts.length === 0) {
-                return res.status(400).json({ message: 'Todos os produtos já estão cadastrados para este cliente' });
+                return res.status(400).json({ message: 'Produto já cadastrados para este cliente' });
             }
     
             // Adicionar os objetos completos de produtos ao array de produtos do cliente

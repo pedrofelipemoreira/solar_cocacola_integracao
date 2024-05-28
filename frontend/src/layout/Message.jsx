@@ -16,7 +16,7 @@ function Message() {
 
             setTimeout(() => {
                 setVisibility(false);
-            }, 5000);  // 5 seconds
+            }, 3000);  // 5 seconds
         };
 
         bus.addListener('flash', flashListener);
