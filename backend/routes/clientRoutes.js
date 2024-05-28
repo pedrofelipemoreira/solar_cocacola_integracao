@@ -27,6 +27,8 @@ router.route('/:id/products')
 router.route('/:id/products')
 .get((req, res) => clientController.getClientProducts(req, res));
 
+router.route('/:id/products/:productId')
+
 export default router; 
 
 

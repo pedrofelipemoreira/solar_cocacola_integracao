@@ -3,13 +3,16 @@ import { useParams } from 'react-router-dom';
 import api from '../../utils/api';
 import { Table, Button, Modal, Checkbox } from 'antd';
 import './meusProdutos.css';
+import useFlashMessage from '../../hooks/useFlashMessage.jsx';
 
-function MeusProdutos () {
+function MeusProdutos() {
   const { id } = useParams(); // Obtenha o ID do cliente da URL
   const [produtosCliente, setProdutosCliente] = useState([]);
   const [produtosDisponiveis, setProdutosDisponiveis] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedProdutos, setSelectedProdutos] = useState([]);
+
+  const { setFlashMessage } = useFlashMessage();
 
   useEffect(() => {
     const fetchProdutosCliente = async () => {
@@ -36,11 +39,12 @@ function MeusProdutos () {
 
   const handleAddProdutos = () => {
     setIsModalVisible(true);
+    setSelectedProdutos(produtosCliente.slice()); // Copia a lista de produtos do cliente para os selecionados inicialmente
   };
 
   const handleModalCancel = () => {
     setIsModalVisible(false);
-    console.log(produtosCliente)
+    setSelectedProdutos([]); // Limpa a lista de produtos selecionados ao fechar o modal
   };
 
   const handleProdutoChange = (produto, isChecked) => {
@@ -52,17 +56,29 @@ function MeusProdutos () {
   };
 
   const handleSalvarSelecao = async () => {
+
+    let msgText = 'Produto adicionado com sucesso!';
+    let msgType = 'success';
+
     setIsModalVisible(false);
 
     try {
-      const response = await api.post(`/clients/${id}/products`, {
+      const response = await api.post(`/clients/${id}/products`, 
+      {
         productIds: selectedProdutos.map(p => p._id)
+
       });
+
       console.log(response.data);
-      setProdutosCliente(prevState => [...prevState, ...selectedProdutos]);
+      
+      setProdutosCliente(selectedProdutos.slice()); // Atualiza a lista de produtos do cliente com os selecionados
+
     } catch (error) {
       console.error('Erro ao salvar seleção de produtos:', error);
+      msgText = error.response.data.message;
+      msgType = 'error';
     }
+    setFlashMessage(msgText, msgType);
   };
 
   const columns = [
@@ -80,7 +96,11 @@ function MeusProdutos () {
         <h1>Produtos do Cliente</h1>
         <Button type="primary" onClick={handleAddProdutos}>Adicionar Produtos ao Cliente</Button>
         {produtosCliente.length > 0 && (
-          <Table columns={columns} dataSource={produtosCliente} />
+          <Table 
+          
+          columns={columns} 
+          
+          dataSource={produtosCliente} />
         )}
       </div>
 
@@ -97,7 +117,8 @@ function MeusProdutos () {
         <ul>
           {produtosDisponiveis.map(produto => (
             <li key={produto._id}>
-              <Checkbox 
+              <Checkbox
+                checked={selectedProdutos.some(p => p._id === produto._id)} // Verifica se o produto está presente nos produtos selecionados
                 onChange={(e) => handleProdutoChange(produto, e.target.checked)}
               >
                 {produto.descricao} - {produto.cod}
@@ -108,6 +129,6 @@ function MeusProdutos () {
       </Modal>
     </div>
   );
-};
+}
 
 export default MeusProdutos;

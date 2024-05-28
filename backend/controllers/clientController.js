@@ -103,38 +103,45 @@ const ClientController = {
     },
 
     addProductsToClient: async (req, res) => {
-        const id = req.params.id
+        const id = req.params.id;
         const { productIds } = req.body;
-      
+    
         try {
-
-
-            if(!isValidObjectId(id)){
-                res.status(422).json({message: 'Id Invalido'});
-                return; 
+            if (!isValidObjectId(id)) {
+                return res.status(422).json({ message: 'ID inválido' });
             }
-
+    
             const client = await ClientModel.findById(id);
-
-            if(!client){
-                res.status(404).json({message: 'Cliente não encotrado'});
-                return; 
+    
+            if (!client) {
+                return res.status(404).json({ message: 'Cliente não encontrado' });
             }
-      
-          // Verificar se todos os produtos existem
-          const products = await Produto.find({ _id: { $in: productIds } });
-          if (products.length !== productIds.length) {
-            return res.status(400).json({ message: 'Alguns produtos não foram encontrados' });
-          }
-      
-          // Adicionar os produtos ao cliente
-          client.products.push(...productIds);
-          await client.save();
-      
-          res.status(200).json({ message: 'Produtos adicionados ao cliente com sucesso' });
+    
+            // Buscar os objetos completos de produtos usando os IDs
+            const products = await Produto.find({ _id: { $in: productIds } });
+    
+            // Verificar se todos os produtos foram encontrados
+            if (products.length !== productIds.length) {
+                return res.status(400).json({ message: 'Alguns produtos não foram encontrados' });
+            }
+    
+            // Verificar se algum dos produtos já está presente no array de produtos do cliente
+            const existingProductIds = client.products.map(p => p._id.toString());
+            const newProducts = products.filter(p => !existingProductIds.includes(p._id.toString()));
+    
+            // Se todos os produtos forem duplicados, retorne uma mensagem informando ao cliente
+            if (newProducts.length === 0) {
+                return res.status(400).json({ message: 'Todos os produtos já estão cadastrados para este cliente' });
+            }
+    
+            // Adicionar os objetos completos de produtos ao array de produtos do cliente
+            client.products.push(...newProducts);
+            await client.save();
+    
+            res.status(200).json({ message: 'Produtos adicionados ao cliente com sucesso', products: newProducts });
         } catch (error) {
-          console.error(error);
-          res.status(500).json({ message: 'Erro ao adicionar produtos ao cliente' });
+            console.error(error);
+            res.status(500).json({ message: 'Erro ao adicionar produtos ao cliente' });
         }
       },
 
@@ -161,6 +168,39 @@ const ClientController = {
           res.status(500).json({ message: 'Erro ao obter produtos do cliente' });
         }
       },
+
+      deleteProductFromClient: async (req, res) => {
+        const clientId = req.params.id;
+        const productId = req.params.productId;
+    
+        try {
+            if (!isValidObjectId(clientId) || !isValidObjectId(productId)) {
+                return res.status(422).json({ message: 'ID inválido' });
+            }
+    
+            const client = await ClientModel.findById(clientId);
+    
+            if (!client) {
+                return res.status(404).json({ message: 'Cliente não encontrado' });
+            }
+    
+            // Verificar se o produto está presente na lista de produtos do cliente
+            const index = client.products.findIndex(product => product._id.toString() === productId);
+    
+            if (index === -1) {
+                return res.status(404).json({ message: 'Produto não encontrado para este cliente' });
+            }
+    
+            // Remover o produto da lista de produtos do cliente
+            client.products.splice(index, 1);
+            await client.save();
+    
+            res.status(200).json({ message: 'Produto removido do cliente com sucesso' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Erro ao remover produto do cliente' });
+        }
+    },
 
     showClient: async (req, res) =>{
 
