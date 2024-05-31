@@ -1,0 +1,8 @@
+services:
+  - name: my-react-app
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run dev
+    publicPort: 3000
+    healthCheckPath: /
+    sourceDir: build
