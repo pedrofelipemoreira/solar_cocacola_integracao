@@ -2,6 +2,6 @@ services:
   - name: frontend
     buildCommand: npm install 
     startCommand: npm run dev
-        envVars:
+      envVars:
       - key: PORT
         value: 3000
