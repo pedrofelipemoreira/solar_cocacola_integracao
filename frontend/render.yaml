@@ -2,3 +2,4 @@ services:
   - name: frontend
     buildCommand: npm install 
     startCommand: npm run dev
+    port: 3000
