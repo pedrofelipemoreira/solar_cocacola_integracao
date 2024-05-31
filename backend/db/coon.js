@@ -1,4 +1,9 @@
 import mongoose from "mongoose";
+import dotenv from 'dotenv';
+dotenv.config(); 
+
+const DB_COON = process.env.DB_COON || 3000
+
 
 async function main(){
 
@@ -6,7 +11,7 @@ async function main(){
 
         mongoose.set("strictQuery", true);
         
-        await mongoose.connect("mongodb+srv://Pedro:alyRZaY16v575rDy@cluster0.stnpqrc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
+        await mongoose.connect(DB_COON);
 
         console.log("Conectado ao banco!!")
 
