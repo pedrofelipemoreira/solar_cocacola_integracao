@@ -7,6 +7,8 @@ import coon from './db/coon.js'
 import clientRoutes from "./routes/clientRoutes.js"
 import produtoRoutes from "./routes/produtoRoutes.js"
 
+const port = process.env.PORT || 3000;
+
 //coon();
 coon(); 
 const app = express();
@@ -26,7 +28,7 @@ app.use('/clients', clientRoutes);
 app.use('/produtos', produtoRoutes);
 
 
-app.listen(3000, function(){
+app.listen(port, function(){
     console.log("Servidor Online!!");
 });
 
