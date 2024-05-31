@@ -11,13 +11,7 @@ import produtoRoutes from "./routes/produtoRoutes.js"
 coon(); 
 const app = express();
 
-//solve cors
-app.use(
-    cors({
-      // origin: process.env.FRONTEND_URL || "http://localhost:3000"
-      origin: "*",
-    })
-  );
+app.use(cors()); 
 
 //config json response
 app.use(express.json());
