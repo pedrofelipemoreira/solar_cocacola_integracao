@@ -4,4 +4,4 @@ services:
     startCommand: npm run dev
       envVars:
       - key: PORT
-        value: 3000
+        value: 5173
