@@ -76,9 +76,9 @@ const AddCliente = () => {
           Tipo Cliente*
           <select className="input" name="tpCliente" value={cliente.tipoCliente} onChange={handleChange} style={{ cursor: 'pointer' }}>
             <option value="">Selecione...</option>
-            <option value="bronze">Bronze</option>
-            <option value="prata">Prata</option>
-            <option value="ouro">Ouro</option>
+            <option value="Bronze">Bronze</option>
+            <option value="Prata">Prata</option>
+            <option value="Ouro">Ouro</option>
           </select>
         </div>
         <div className='smash'>CNPJ<input className="cpnj" type="string" placeholder="12.345.678/0001-90" name="cnpj" onChange={handleChange} /></div>
