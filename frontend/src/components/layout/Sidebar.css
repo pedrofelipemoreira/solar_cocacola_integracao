@@ -1,4 +1,3 @@
-/* Adicione esta linha para importar a fonte */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 .sidebar {
@@ -14,8 +13,6 @@
     background-color: #F3F4F6;
     overflow: hidden;
     z-index: 1000;
-    font-family: 'Poppins', sans-serif; /* Aplicando a fonte Poppins */
-    font-weight: 500; /* Fonte com peso medium */
 }
 
 .sidebar-logo {
@@ -78,6 +75,11 @@
     transition: background-color 0.3s, color 0.3s;
 }
 
+.sidebar-button .sidebar-icon {
+    font-size: 24px;
+    color: #9CA3AF;
+}
+
 .sidebar-button:hover, .sidebar-selected {
     background-color: red;
     color: white;
@@ -91,10 +93,7 @@
     margin-left: 10px;
 }
 
-.sidebar-button .sidebar-icon {
-    font-size: 24px;
-    color: #9CA3AF;
-}
+
 
 .sidebar a {
     text-decoration: none;
