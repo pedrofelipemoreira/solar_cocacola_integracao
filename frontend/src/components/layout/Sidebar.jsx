@@ -1,80 +1,71 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Sidebar.css";
 import { Divider } from "antd";
-import { FaHome } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { FaBoxOpen } from "react-icons/fa";
-import { FaPeopleLine } from "react-icons/fa6";
-import { BiBarChartAlt2 } from "react-icons/bi";
-import { BiDollar } from "react-icons/bi";
-import { IoMdPersonAdd } from "react-icons/io";
+import { AiOutlineAppstore, AiOutlineUsergroupAdd, AiOutlineDollarCircle, AiOutlineUserAdd } from "react-icons/ai";
+import { Link, useLocation } from "react-router-dom";
 import Logo from "../../asserts/icones/solarcocacola.png"
-import { BsPlusCircleFill } from "react-icons/bs";
 
 const Navbar = () => {
+    const location = useLocation();
+    
+    // Função para truncar o e-mail
+    const truncateEmail = (email) => {
+      const maxLength = 14;
+      if (email.length > maxLength) {
+          return `${email.slice(0, maxLength)}...`;
+      }
+      return email;
+  };
+
+    const email = "exemplo@gmail.com";
+    const truncatedEmail = truncateEmail(email);
+
     return (
         <aside className="sidebar">
-        
-        <img src={Logo} alt="logo" width={180} />
-        <header className="sidebar-header">
-          <img className="logo-perfil" src="https://thispersondoesnotexist.com/" alt="fotoexemplo"></img>
-          <div className="info-perfil">
-            <h2>Exemplo</h2> 
-            <p>exemplo@gmail.com</p>
-          </div>
-        </header>
-        <Divider style={{ margin: "10px 0", backgroundColor: "#9CA3AF" }} />
-        <nav className="border">
+            <img src={Logo} alt="logo" className="sidebar-logo" />
+            <header className="sidebar-header">
+                <img className="sidebar-logo-perfil" src="https://thispersondoesnotexist.com/" alt="fotoexemplo" />
+                <div className="sidebar-info-perfil">
+                    <h2>Exemplo</h2>
+                    <p>{truncatedEmail}</p>
+                </div>
+            </header>
+            <Divider className="sidebar-divider" />
+            <nav className="sidebar-nav">
+                <Link to="/produtos">
+                    <button className={`sidebar-button ${location.pathname === "/produtos" ? "sidebar-selected" : ""}`}>
+                        <AiOutlineAppstore className="sidebar-icon" />
+                        <span>Produtos</span>
+                    </button>
+                </Link>
+                <Link to="/cliente">
+                    <button className={`sidebar-button ${location.pathname === "/cliente" ? "sidebar-selected" : ""}`}>
+                        <AiOutlineUsergroupAdd className="sidebar-icon" />
+                        <span>Clientes</span>
+                    </button>
+                </Link>
+                <Link to="/promocoes">
+                    <button className={`sidebar-button ${location.pathname === "/promocoes" ? "sidebar-selected" : ""}`}>
+                        <AiOutlineDollarCircle className="sidebar-icon" />
+                        <span>Promoções</span>
+                    </button>
+                </Link>
+                <Divider className="sidebar-divider" />
+                <Link to="/addcliente">
+                    <button className={`sidebar-button ${location.pathname === "/addcliente" ? "sidebar-selected" : ""}`}>
+                        <AiOutlineUserAdd className="sidebar-icon" />
+                        <span>Add Cliente</span>
+                    </button>
+                </Link>
+                <Link to="/addProdutos">
+                    <button className={`sidebar-button ${location.pathname === "/addProdutos" ? "sidebar-selected" : ""}`}>
+                        <AiOutlineAppstore className="sidebar-icon" />
+                        <span>Add Produtos</span>
+                    </button>
+                </Link>
+            </nav>
+        </aside>
+    );
+};
 
-          <Link to="/produtos">
-            <button>
-              <span>
-                <FaBoxOpen  />
-                <span>Produtos</span>
-              </span>
-            </button>
-          </Link>
-
-        <Link to="/cliente">
-          <button>
-            <span>
-              <FaPeopleLine/>
-               <span>Clientes</span>
-            </span>
-          </button>
-        </Link>
-
-          <Link to="/promocoes">
-          <button>
-            <span>
-            <BiDollar/>
-               <span>Promoções</span>
-            </span>
-          </button>
-          </Link>
-
-          <Divider style={{ margin: "10px 0", backgroundColor: "#9CA3AF" }} />
-
-          <Link to="/addcliente">
-          <button>
-            <span>
-            <IoMdPersonAdd />
-               <span>Add Cliente</span>
-            </span>
-          </button>
-          </Link>
-
-          <Link to="/addProdutos">
-          <button>
-            <span>
-            <BsPlusCircleFill />
-               <span>Add Produtos</span>
-            </span>
-          </button>
-          </Link>
-        </nav>
-      </aside>
-  )
-}
-
-export default Navbar
+export default Navbar;

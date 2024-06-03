@@ -5,7 +5,7 @@ dotenv.config();
 const DB_COON = process.env.DB_COON || "mongodb+srv://Pedro:alyRZaY16v575rDy@cluster0.stnpqrc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 
-async function main(){
+async function main(){  
 
     try {
 
