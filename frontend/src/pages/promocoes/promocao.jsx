@@ -2,6 +2,8 @@ import './promocao.css';
 import React, { useState, useEffect } from 'react';
 import api from '../../utils/api';
 import { Space, Table, Button, Modal, Form, Input, Select, Row, Col } from 'antd';
+import useFlashMessage from '../../hooks/useFlashMessage'
+
 
 import functionsProduto from '../Produtos/functionsProduto.jsx'
 
@@ -11,6 +13,8 @@ const Promocao = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [produtoSelecionado, setProdutoSelecionado] = useState(null);
     const [produtosPromocionais, setprodutosPromocionais] = useState([]);
+
+    const {setFlashMessage} = useFlashMessage()
 
     const { register } = functionsProduto();
     const { removeProduto } = functionsProduto();
@@ -211,7 +215,10 @@ const Promocao = () => {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <Button danger onClick={() => removeProduto(record._id, produtos)}>Excluir Promoção</Button>
+                    <Button danger onClick={() => 
+                        handlDeletePromocao(record._id, produtos)
+
+                    }>Excluir Promoção</Button>
                 </Space>
             ),
         }
@@ -259,15 +266,58 @@ const Promocao = () => {
         setProdutoSelecionado(null);
     };
 
-    const handleAddPromocao = () => {
+    const handleAddPromocao = async () => {
         // Lógica para adicionar promoção
         setIsModalVisible(false);
         setProdutoSelecionado(null);
 
         console.log(novaPromocao);
 
-        register(novaPromocao)
+        let msgText = 'Cadastro Realizado com sucesso!';
+        let msgType = 'success';
+
+        try{
+
+            const response = await api.post('/produtos/create', novaPromocao).then((response) =>{
+                return response.data
+            })
+            
+        }catch(error){
+
+            console.log(error)
+            msgText = error.response.data.message;
+            msgType = 'error';
+
+        }
+
+        fecharProdutos()
+        setFlashMessage(msgText, msgType)
     };
+
+    const handlDeletePromocao = async (id, produtos) => {
+
+
+    let msgType = 'success';
+    const data = await api.delete(`/produtos/${id}`)
+      .then((response) => {
+        const updateProdutos = produtos.filter((produto) => produto._id !== id)
+
+        setprodutosPromocionais(updateProdutos)
+        return response.data
+
+
+    }).catch((err) => {
+        
+        msgType = 'error'
+        return err.response.data
+    })
+
+    fecharProdutos();
+
+    setFlashMessage(data.message, msgType);
+
+
+    }
 
     return (
         <div className='bodyPromocao'>

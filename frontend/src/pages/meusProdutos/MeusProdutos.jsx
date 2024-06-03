@@ -118,7 +118,7 @@ function MeusProdutos() {
   };
 
   // Filtrar os produtos disponíveis com base na região do cliente
-  const produtosFiltrados = produtosDisponiveis.filter(produto => produto.regiao === cliente.uf);
+  const produtosFiltrados = produtosDisponiveis.filter(produto => produto.regiao === cliente.uf && produto.role === 'padrao');
 
   return (
     <div className='tt'>
